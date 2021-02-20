@@ -6,8 +6,8 @@ import "./user.sol";
 import "./Transaction.sol";
 
 contract DataManagement{
+    mapping(bytes32 => address) Txn_addr;
     //利用企業戶ID對應到Funder ID,並將Funder 資料利用Struct儲存
-     mapping(bytes32 => address) Txn_addr;
     mapping(bytes32 => match_funder) public match_result;
     struct match_funder{
         bytes32 userID;
@@ -106,6 +106,7 @@ contract DataManagement{
                 statements[n] = 0;
                 Transaction Txn = new Transaction(pro_idds[i],fun_idds[n],address(this));
                 Txn_addr[pro_idds[i]] = address(Txn);
+                Txn_addr[fun_idds[n]] = address(Txn);
                 count++;
             }
         }

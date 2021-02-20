@@ -110,7 +110,12 @@ contract CreateManagement{
         }
     }
     
-   
+   function get_category(string memory userid)public view returns(bytes32){
+        address addr=users[userid];
+        User u = User(addr);
+        bytes32 kind = u.get_category();
+        return kind;
+    }
     
     
     

@@ -1,7 +1,7 @@
 import express from "express";
 import logger from "morgan";
 import { connect_to_web3 } from "./function/web3";
-import { getContractInstance, contract_call, contract_send, string_to_bytes32 } from "./function/contract";
+import { getContractInstance, contract_call, contract_send, string_to_bytes32, bytes32_to_string } from "./function/contract";
 import CreateManagement from "./build/contracts/CreateManagement.json";
 import DataManagement from "./build/contracts/DataManagement.json";
 import path from "./path.json";
@@ -49,11 +49,18 @@ const login = async (req, res) => {
     const web3 = await connect_to_web3();
     const accounts = await web3.eth.getAccounts();
     const contract = await getContractInstance(web3, CreateManagement.abi, CM_Addr);
-    let loggin = await contract_call(contract, 'login', [id, password], {
+    const loggin = await contract_call(contract, 'login', [id, password], {
         from: accounts[0],
         gas: 6000000,
     })
+    let kind = await contract_call(contract, 'get_category', [id], {
+        from: accounts[0],
+        gas: 6000000,
+    })
+    let transferkind = bytes32_to_string(kind);
     current_user = id;
+    category = transferkind;
+    console.log(category);
     res.json(loggin);
 }
 //設定使用者基本資料
@@ -125,7 +132,7 @@ const get_UniqueProjectData = async (req, res) => {
 
 //取得所有企業方專案資料
 const getAllProjectData = async (req, res) => {
-    const {} = req.query;
+    const { } = req.query;
     const web3 = await connect_to_web3();
     const accounts = await web3.eth.getAccounts();
     const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
@@ -133,16 +140,18 @@ const getAllProjectData = async (req, res) => {
         from: accounts[0],
         gas: 6000000,
     })
+    // let newresult = bytes32_to_string(result["0"][0]);
+    // res.json(newresult);
     res.json(result);
 }
 
 //輸入投資方投資資料
 const set_FundertData = async (req, res) => {
-    const { investment_number,investment_Duration,investment_Amount ,investment_Return} = req.query;
+    const { investment_number, investment_Duration, investment_Amount, investment_Return } = req.query;
     const web3 = await connect_to_web3();
     const accounts = await web3.eth.getAccounts();
     const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
-    const result = await contract_send(contract, 'set_FundertData', [current_user,investment_number,investment_Duration,investment_Return,investment_Amount], {
+    const result = await contract_send(contract, 'set_FundertData', [current_user, investment_number, investment_Duration, investment_Return, investment_Amount], {
         from: accounts[0],
         gas: 6000000,
     })
@@ -163,7 +172,7 @@ const get_UniqueFunderData = async (req, res) => {
 }
 //取的所有投資方資料
 const get_allFunderData = async (req, res) => {
-    const {} = req.query;
+    const { } = req.query;
     const web3 = await connect_to_web3();
     const accounts = await web3.eth.getAccounts();
     const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
@@ -176,7 +185,7 @@ const get_allFunderData = async (req, res) => {
 
 //進行匹配
 const matching = async (req, res) => {
-    const {} = req.query;
+    const { } = req.query;
     const web3 = await connect_to_web3();
     const accounts = await web3.eth.getAccounts();
     const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
@@ -189,7 +198,7 @@ const matching = async (req, res) => {
 
 //取得匹配資料
 const get_MatchingData = async (req, res) => {
-    const {} = req.query;
+    const { } = req.query;
     const web3 = await connect_to_web3();
     const accounts = await web3.eth.getAccounts();
     const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
@@ -201,8 +210,9 @@ const get_MatchingData = async (req, res) => {
     res.json(result);
 }
 
+//計算匹配成功次數
 const get_counted = async (req, res) => {
-    const {} = req.query;
+    const { } = req.query;
     const web3 = await connect_to_web3();
     const accounts = await web3.eth.getAccounts();
     const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
@@ -213,8 +223,71 @@ const get_counted = async (req, res) => {
     res.json(result);
 }
 
+const set_txn = async (req, res) => {
+    const { } = req.query;
+    const web3 = await connect_to_web3();
+    const accounts = await web3.eth.getAccounts();
+    const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
+    const uid = string_to_bytes32(current_user);
+    const txn_addr = await contract_call(contract, 'get_Txnaddr', [uid], {
+        from: accounts[0],
+        gas: 6000000,
+    })
+    const result = await contract_send(contract, 'set_txn', [txn_addr], {
+        from: accounts[0],
+        gas: 6000000,
+    })
+    res.json(result);
+}
 
+const get_TXNEnterpriserWallet = async (req, res) => {
+    const { } = req.query;
+    const web3 = await connect_to_web3();
+    const accounts = await web3.eth.getAccounts();
+    const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
+    const uid = string_to_bytes32(current_user);
+    const txn_addr = await contract_call(contract, 'get_Txnaddr', [uid], {
+        from: accounts[0],
+        gas: 6000000,
+    })
+    const result = await contract_call(contract, 'get_TXNEnterpriserWallet', [txn_addr], {
+        from: accounts[0],
+        gas: 6000000,
+    })
+    let newresult = bytes32_to_string(result["0"]);
+    res.json({
+        userID:newresult,
+        project_name:result["1"],
+        Target_amount:result["2"],
+        interest_rate:result["3"],
+        current_amount:result["4"],
+        interest_payable:result["5"]
+    });
+}
 
+const get_TXNFunderWallet = async (req, res) => {
+    const { } = req.query;
+    const web3 = await connect_to_web3();
+    const accounts = await web3.eth.getAccounts();
+    const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
+    const uid = string_to_bytes32(current_user);
+    const txn_addr = await contract_call(contract, 'get_Txnaddr', [uid], {
+        from: accounts[0],
+        gas: 6000000,
+    })
+    const result = await contract_call(contract, 'get_TXNFunderWallet', [txn_addr], {
+        from: accounts[0],
+        gas: 6000000,
+    })
+    let newresult = bytes32_to_string(result["0"]);
+    res.json({
+        userID:newresult,
+        investment_Return:result["1"],
+        investment_amount:result["2"],
+        current_money:result["3"],
+        interest_receivable:result["4"],
+    });
+}
 
 app.post('/create', create);
 app.get('/login', login);
@@ -229,6 +302,11 @@ app.get('/get_allFunderData', get_allFunderData);
 app.post('/matching', matching);
 app.get('/get_MatchingData', get_MatchingData);
 app.get('/get_counted', get_counted);
+app.post('/set_txn', set_txn);
+app.get('/get_TXNEnterpriserWallet', get_TXNEnterpriserWallet);
+app.get('/get_TXNFunderWallet', get_TXNFunderWallet);
+
+
 
 app.listen(process.env.LISTENING_PORT, () => {
     console.log(`App listening at http://localhost:${process.env.LISTENING_PORT}`);
