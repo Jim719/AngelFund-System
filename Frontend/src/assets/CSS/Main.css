@@ -1,0 +1,60 @@
+ .Background {  /*homePage底色 */
+    width: (100vw);
+    height: (100vh);
+    background-size:auto;
+    background-color:#EFB28C;
+    display: block;
+}
+.test {  /*homePage底色 */
+  width: (100vw);
+  height: 100vh;
+  /* background-size:auto; */
+  background-color:#6b30ca;
+  /* display: block; */
+}
+.Title {
+    /*這邊的寬度100%是抓menu設定的寬度*/
+    width: 100%;
+    /*寫一個適合的高度*/
+    height: 100px;
+    /*設定底色為#4A4A4A*/
+    background-color: #4A4A4A;
+}
+.Usericon{      
+    /* background: url('../images/me.jpg') no-repeat; */
+    background-size: 50px auto;
+    height: 100px;
+    width: 100px;
+    display: inline-block;    
+}
+.Info{
+    display:flex;
+    flex-direction:row;
+
+}
+.Info_new1{ /*homePage 區塊鏈資訊介紹 */  
+  height:430px; 
+  padding: 10px;
+  color: white;
+  font-size: 18px;
+  background-color: #044269;  
+}
+.Info_new2{    /*homePage 天使基金資訊介紹 */
+    height:430px; 
+    padding: 10px;
+    color: white;
+    font-size: 18px;
+    background-color: #3E6B7E;
+    
+  }
+  .Info_new3{   /*homePage 共享經濟資訊介紹 */  
+    height:430px; 
+    padding: 10px;
+    color: white;
+    font-size: 18px;
+    background-color: #85A894;   
+  }
+  .footllist li{
+    display: inline;
+    margin: 20px;
+  }

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js --exec babel-node --inspect=10000"
+    "start": "nodemon AF.js --exec babel-node --inspect=10000"
   },
   "author": "",
   "license": "ISC",

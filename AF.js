@@ -7,9 +7,9 @@ import DataManagement from "./build/contracts/DataManagement.json";
 import path from "./path.json";
 
 require("dotenv").config(); //環境變數
-const app = express();
-app.use(express.json()); //回應能使用json格式
-app.use(logger("dev")); //顯示呼叫的api在console畫面
+const AF = express();
+AF.use(express.json()); //回應能使用json格式
+AF.use(logger("dev")); //顯示呼叫的api在console畫面
 
 const CM_Addr = path.CreateManagement;
 const DM_Addr = path.DataManagement;
@@ -107,15 +107,21 @@ const get_AccountInfo = async (req, res) => {
 }
 //輸入企業方投資專案資料
 const set_ProjectData = async (req, res) => {
-    const { eventnumber, project_Name, project_Indtroduce, project_Endday, Target_Amount, interest_Return } = req.query;
-    const web3 = await connect_to_web3();
-    const accounts = await web3.eth.getAccounts();
-    const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
-    const result = await contract_send(contract, 'set_ProjectData', [current_user, eventnumber, project_Name, project_Indtroduce, project_Endday, Target_Amount, interest_Return], {
-        from: accounts[0],
-        gas: 6000000,
-    })
-    res.json(result);
+    if (category === "Enterprise") {
+        const { eventnumber, project_Name, project_Indtroduce, project_Endday, Target_Amount, interest_Return } = req.query;
+        const web3 = await connect_to_web3();
+        const accounts = await web3.eth.getAccounts();
+        const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
+        const result = await contract_send(contract, 'set_ProjectData', [current_user, eventnumber, project_Name, project_Indtroduce, project_Endday, Target_Amount, interest_Return], {
+            from: accounts[0],
+            gas: 6000000,
+        })
+        res.json(result);
+    }
+    else {
+        res.json("身分別無效");
+    }
+    console.log("身分為: "+category);
 }
 //取得特定企業方投資專案資料
 const get_UniqueProjectData = async (req, res) => {
@@ -147,15 +153,21 @@ const getAllProjectData = async (req, res) => {
 
 //輸入投資方投資資料
 const set_FundertData = async (req, res) => {
-    const { investment_number, investment_Duration, investment_Amount, investment_Return } = req.query;
-    const web3 = await connect_to_web3();
-    const accounts = await web3.eth.getAccounts();
-    const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
-    const result = await contract_send(contract, 'set_FundertData', [current_user, investment_number, investment_Duration, investment_Return, investment_Amount], {
-        from: accounts[0],
-        gas: 6000000,
-    })
-    res.json(result);
+    if (category === "Funder") {
+        const { investment_number, investment_Duration, investment_Amount, investment_Return } = req.query;
+        const web3 = await connect_to_web3();
+        const accounts = await web3.eth.getAccounts();
+        const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
+        const result = await contract_send(contract, 'set_FundertData', [current_user, investment_number, investment_Duration, investment_Return, investment_Amount], {
+            from: accounts[0],
+            gas: 6000000,
+        })
+        res.json(result);
+    }
+    else{
+        res.json("身分別錯誤")
+    }
+    concole.log("身分為: "+category);
 }
 
 //取得特定投資方資料
@@ -207,7 +219,15 @@ const get_MatchingData = async (req, res) => {
         from: accounts[0],
         gas: 6000000,
     })
-    res.json(result);
+    let newresult = bytes32_to_string(result["0"]);
+    let newdate = bytes32_to_string(result["1"]);
+    res.json({
+        userID: newresult,
+        investment_Duration: newdate,
+        investment_Return: result["2"],
+        investment_Amount: result["3"]
+
+    });
 }
 
 //計算匹配成功次數
@@ -256,12 +276,12 @@ const get_TXNEnterpriserWallet = async (req, res) => {
     })
     let newresult = bytes32_to_string(result["0"]);
     res.json({
-        userID:newresult,
-        project_name:result["1"],
-        Target_amount:result["2"],
-        interest_rate:result["3"],
-        current_amount:result["4"],
-        interest_payable:result["5"]
+        userID: newresult,
+        project_name: result["1"],
+        Target_amount: result["2"],
+        interest_rate: result["3"],
+        current_amount: result["4"],
+        interest_payable: result["5"]
     });
 }
 
@@ -281,35 +301,35 @@ const get_TXNFunderWallet = async (req, res) => {
     })
     let newresult = bytes32_to_string(result["0"]);
     res.json({
-        userID:newresult,
-        investment_Return:result["1"],
-        investment_amount:result["2"],
-        current_money:result["3"],
-        interest_receivable:result["4"],
+        userID: newresult,
+        investment_Return: result["1"],
+        investment_amount: result["2"],
+        current_money: result["3"],
+        interest_receivable: result["4"],
     });
 }
 
-app.post('/create', create);
-app.get('/login', login);
-app.post('/updateAccount', updateAccount);
-app.get('/get_AccountInfo', get_AccountInfo);
-app.post('/set_ProjectData', set_ProjectData);
-app.get('/get_UniqueProjectData', get_UniqueProjectData);
-app.get('/getAllProjectData', getAllProjectData);
-app.post('/set_FundertData', set_FundertData);
-app.get('/get_UniqueFunderData', get_UniqueFunderData);
-app.get('/get_allFunderData', get_allFunderData);
-app.post('/matching', matching);
-app.get('/get_MatchingData', get_MatchingData);
-app.get('/get_counted', get_counted);
-app.post('/set_txn', set_txn);
-app.get('/get_TXNEnterpriserWallet', get_TXNEnterpriserWallet);
-app.get('/get_TXNFunderWallet', get_TXNFunderWallet);
+AF.post('/create', create); //創建帳號
+AF.get('/login', login);    //登入
+AF.post('/updateAccount', updateAccount);       //輸入個人資料
+AF.get('/get_AccountInfo', get_AccountInfo);    //取得個人資料
+AF.post('/set_ProjectData', set_ProjectData);   //輸入被投資專案資料
+AF.get('/get_UniqueProjectData', get_UniqueProjectData);    //取得特定被投資專案資料
+AF.get('/getAllProjectData', getAllProjectData);    //取得所有被投資專案資料
+AF.post('/set_FundertData', set_FundertData);       //輸入投資者欲投資資料
+AF.get('/get_UniqueFunderData', get_UniqueFunderData);      //取得特定投資者欲投資資料
+AF.get('/get_allFunderData', get_allFunderData);            //取得所有投資者欲投資資料
+AF.post('/matching', matching);         //進行匹配
+AF.get('/get_MatchingData', get_MatchingData);      //取得匹配成功資料
+AF.get('/get_counted', get_counted);    //計算匹配次數
+AF.post('/set_txn', set_txn);           //交易開始
+AF.get('/get_TXNEnterpriserWallet', get_TXNEnterpriserWallet);  //取得交易完成後企業方金額帳目
+AF.get('/get_TXNFunderWallet', get_TXNFunderWallet);            //取得交易完成後投資方金額帳目
 
 
 
-app.listen(process.env.LISTENING_PORT, () => {
-    console.log(`App listening at http://localhost:${process.env.LISTENING_PORT}`);
+AF.listen(process.env.LISTENING_PORT, () => {
+    console.log(`AF listening at http://localhost:${process.env.LISTENING_PORT}`);
 });
 
 
