@@ -11,9 +11,17 @@ contract DataManagement{
     mapping(bytes32 => match_funder) public match_result;
     struct match_funder{
         bytes32 userID;
-        bytes32 investment_duration;
+        // bytes32 investment_duration;
         uint256 investment_return;
         uint256 investment_amount;
+    }
+    //利用投資者ID對應到Project_ID，並將企業方 資料立用struct儲存
+    mapping(bytes32 => match_Proside) public Invmatch_result;
+    struct match_Proside{
+        bytes32 userID;
+        bytes32 names;
+        uint256 t_amounts;
+        uint256 i_returns;
     }
     ProjectData PD = new ProjectData(); //實體化
     FunderData FD = new FunderData(); //實體化
@@ -82,27 +90,30 @@ contract DataManagement{
     //Matching以企業專案角度遍歷所有適合的Funder
     function matching()public{
         bytes32[] memory pro_idds;
+        bytes32[] memory names;
         uint256[] memory t_amounts;
         uint256[] memory i_returns;
         
         bytes32[] memory fun_idds;
-        bytes32[] memory duration;
+        // bytes32[] memory duration;
         uint256[] memory interest;
         uint256[] memory i_amounts;
         uint256[] memory statements;
         uint count;
-        (pro_idds,,,,t_amounts,i_returns)=DataManagement.getAllProjectData();
-        (fun_idds,duration,interest,i_amounts,statements)=DataManagement.get_allFunderData();
+        (pro_idds,names,,,t_amounts,i_returns)=DataManagement.getAllProjectData();
+        (fun_idds,,interest,i_amounts,statements)=DataManagement.get_allFunderData();
         
         for(uint i = 0 ; i <pro_idds.length ; i++){
             uint256 n = pro_idds.length; 
+            
             for(uint j=0 ; j<fun_idds.length ; j++){ 
                 if(interest[j] <= i_returns[i] && i_amounts[j] >= t_amounts[i] && statements[j] != 0){
                     n = j;
                 }
             }
             if(n != pro_idds.length){
-                match_result[pro_idds[i]] = match_funder(fun_idds[n],duration[n],interest[n],i_amounts[n]);
+                match_result[pro_idds[i]] = match_funder(fun_idds[n],interest[n],i_amounts[n]);
+                Invmatch_result[fun_idds[n]] = match_Proside(pro_idds[i],names[i],t_amounts[i],i_returns[i]);
                 statements[n] = 0;
                 Transaction Txn = new Transaction(pro_idds[i],fun_idds[n],address(this));
                 Txn_addr[pro_idds[i]] = address(Txn);
@@ -113,9 +124,14 @@ contract DataManagement{
         counted = count;
     }
     // 取得匹配資料
-    function get_MatchingData(bytes32  id)public view returns( bytes32 ,bytes32,uint256,uint256) {
+    function get_MatchingData(bytes32  id)public view returns( bytes32 ,uint256,uint256) {
         match_funder memory mf = match_result[id];
-        return(mf.userID,mf.investment_duration,mf.investment_return,mf.investment_amount);
+        return(mf.userID,mf.investment_return,mf.investment_amount);
+    }
+    // 以投資者角度取得取得企業方匹配資料
+    function get_InvMatchingData(bytes32  id)public view returns( bytes32 ,bytes32 ,uint256,uint256) {
+        match_Proside memory mp = Invmatch_result[id];
+        return(mp.userID,mp.names,mp.t_amounts,mp.i_returns);
     }
     
     function get_counted()public view returns(uint){

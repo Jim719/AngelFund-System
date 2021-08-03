@@ -39,7 +39,7 @@ contract Transaction{
         bytes32 funderuserID;
         uint256 investment_return;
         uint256 investment_amount;
-        (funderuserID,,investment_return,investment_amount) = DM.get_MatchingData(Enter_id);
+        (funderuserID,investment_return,investment_amount) = DM.get_MatchingData(Enter_id);
         fw = Funder_wallet(funderuserID,investment_return,investment_amount,0,0);
         
         string memory convertuserID;

@@ -121,7 +121,7 @@ const set_ProjectData = async (req, res) => {
     else {
         res.json("身分別無效");
     }
-    console.log("身分為: "+category);
+    console.log("身分為: "+category+',ID是:'+current_user);
 }
 //取得特定企業方投資專案資料
 const get_UniqueProjectData = async (req, res) => {
@@ -167,7 +167,7 @@ const set_FundertData = async (req, res) => {
     else{
         res.json("身分別錯誤")
     }
-    concole.log("身分為: "+category);
+    console.log("身分為: "+category+',ID是:'+current_user);
 }
 
 //取得特定投資方資料
@@ -220,12 +220,34 @@ const get_MatchingData = async (req, res) => {
         gas: 6000000,
     })
     let newresult = bytes32_to_string(result["0"]);
-    let newdate = bytes32_to_string(result["1"]);
     res.json({
         userID: newresult,
-        investment_Duration: newdate,
-        investment_Return: result["2"],
-        investment_Amount: result["3"]
+        // investment_Duration: newdate,
+        investment_Return: result["1"],
+        investment_Amount: result["2"]
+
+    });
+}
+
+//以投資者角度取得匹配資料
+const get_InvMatchingData = async (req, res) => {
+    const { } = req.query;
+    const web3 = await connect_to_web3();
+    const accounts = await web3.eth.getAccounts();
+    const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
+    const uid = string_to_bytes32(current_user);
+    const result = await contract_call(contract, 'get_InvMatchingData', [uid], {
+        from: accounts[0],
+        gas: 6000000,
+    })
+    let newresult = bytes32_to_string(result["0"]);
+    let names = bytes32_to_string(result["1"]);
+    res.json({
+        userID: newresult,
+        // investment_Duration: newdate,
+        Name: names,
+        Target_Amount:result["2"],
+        interest_Return: result["3"]
 
     });
 }
@@ -321,6 +343,7 @@ AF.get('/get_UniqueFunderData', get_UniqueFunderData);      //取得特定投資
 AF.get('/get_allFunderData', get_allFunderData);            //取得所有投資者欲投資資料
 AF.post('/matching', matching);         //進行匹配
 AF.get('/get_MatchingData', get_MatchingData);      //取得匹配成功資料
+AF.get('/get_InvMatchingData', get_InvMatchingData);      //取得匹配成功資料
 AF.get('/get_counted', get_counted);    //計算匹配次數
 AF.post('/set_txn', set_txn);           //交易開始
 AF.get('/get_TXNEnterpriserWallet', get_TXNEnterpriserWallet);  //取得交易完成後企業方金額帳目
