@@ -42,18 +42,89 @@ const useStyles = makeStyles({
   table: {
     minWidth: 700,
   },
-  content:{
+  content: {
     width: '1025px',
-    backgroundColor: '#EFB28C' 
+    backgroundColor: '#EFB28C'
   }
 });
 
 
 
 
-export default function MyTables({ tableHead, tableData }) {
+export const ProjectData_Tbl = ({ tableHead, tableData }) => {
   const classes = useStyles();
+  return (
+    <div >
+      <TableContainer component={Paper} >
+        <Table className={classes.table} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell component="th" scope="row" align="right">專案名稱</StyledTableCell>
+              <StyledTableCell component="th" scope="row" align="right">專案敘述</StyledTableCell>
+              <StyledTableCell component="th" scope="row" align="right">專案截止日</StyledTableCell>
+              <StyledTableCell component="th" scope="row" align="right">專案金額</StyledTableCell>
+              <StyledTableCell component="th" scope="row" align="right">專案利率</StyledTableCell>
+              {/* {tableHead.map(item => (
+                <StyledTableCell align="right">
+                  {item.Headname}
+                </StyledTableCell>
+              ))} */}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tableData.map(Data => (
+              <StyledTableRow key={Data.Name}>
+                <TableCell component="th" scope="row" align="right">{Data.Name}</TableCell>
+                <TableCell align="right">{Data.phone}</TableCell>
+                <TableCell align="right">{Data.info}</TableCell>
+                <TableCell align="right">{Data.money}</TableCell>
+                <TableCell align="right">hello</TableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
+  );
+}
 
+export const InvestData_Tbl = ({ tableHead, tableData }) => {
+  const classes = useStyles();
+  return (
+    <div >
+      <TableContainer component={Paper} >
+        <Table className={classes.table} aria-label="customized table">
+          <TableHead>
+            <StyledTableCell component="th" scope="row" align="right">投資期間</StyledTableCell>
+            <StyledTableCell component="th" scope="row" align="right">投資金額</StyledTableCell>
+            <StyledTableCell component="th" scope="row" align="right">投資利息</StyledTableCell>
+            {/* <TableRow>
+              {tableHead.map(item => (
+                <StyledTableCell align="right">
+                  {item.Headname}
+                </StyledTableCell>
+              ))}
+            </TableRow> */}
+          </TableHead>
+          <TableBody>
+            {tableData.map(Data => (
+              <StyledTableRow key={Data.Name}>
+                <TableCell component="th" scope="row" align="right">{Data.Name}</TableCell>
+                <TableCell align="right">{Data.phone}</TableCell>
+                <TableCell align="right">{Data.info}</TableCell>
+                {/* <TableCell align="right">{Data.money}</TableCell> */}
+                
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
+  );
+}
+
+export const MatchingProjectData_Tbl = ({ tableHead, tableData }) => {
+  const classes = useStyles();
   return (
     <div >
       <TableContainer component={Paper} >
@@ -65,13 +136,6 @@ export default function MyTables({ tableHead, tableData }) {
                   {item.Headname}
                 </StyledTableCell>
               ))}
-
-
-              {/* <StyledTableCell>Dessert (100g serving)</StyledTableCell>
-            <StyledTableCell align="right">Calories</StyledTableCell>
-            <StyledTableCell align="right">Fat&nbsp;(g)</StyledTableCell>
-            <StyledTableCell align="right">Carbs&nbsp;(g)</StyledTableCell>
-            <StyledTableCell align="right">Protein&nbsp;(g)</StyledTableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -80,21 +144,42 @@ export default function MyTables({ tableHead, tableData }) {
                 <TableCell component="th" scope="row" align="right">{Data.Name}</TableCell>
                 <TableCell align="right">{Data.phone}</TableCell>
                 <TableCell align="right">{Data.info}</TableCell>
-                <TableCell align="right">{Data.money}</TableCell>
+                {/* <TableCell align="right">{Data.money}</TableCell> */}
+                <TableCell align="right">hello</TableCell>
               </StyledTableRow>
-
             ))}
-            {/* {rows.map((row) => (
-            <StyledTableRow key={row.name}>
-              <StyledTableCell component="th" scope="row">
-                {row.name}
-              </StyledTableCell>
-              <StyledTableCell align="right">{row.calories}</StyledTableCell>
-              <StyledTableCell align="right">{row.fat}</StyledTableCell>
-              <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-              <StyledTableCell align="right">{row.protein}</StyledTableCell>
-            </StyledTableRow>
-          ))} */}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
+  );
+}
+
+export const MatchingInvestData_Tbl = ({ tableHead, tableData }) => {
+  const classes = useStyles();
+  return (
+    <div >
+      <TableContainer component={Paper} >
+        <Table className={classes.table} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              {tableHead.map(item => (
+                <StyledTableCell align="right">
+                  {item.Headname}
+                </StyledTableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tableData.map(Data => (
+              <StyledTableRow key={Data.Name}>
+                <TableCell component="th" scope="row" align="right">{Data.Name}</TableCell>
+                <TableCell align="right">{Data.phone}</TableCell>
+                <TableCell align="right">{Data.info}</TableCell>
+                {/* <TableCell align="right">{Data.money}</TableCell> */}
+                <TableCell align="right">hello</TableCell>
+              </StyledTableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>

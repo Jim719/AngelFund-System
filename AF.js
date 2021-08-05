@@ -5,12 +5,23 @@ import { getContractInstance, contract_call, contract_send, string_to_bytes32, b
 import CreateManagement from "./build/contracts/CreateManagement.json";
 import DataManagement from "./build/contracts/DataManagement.json";
 import path from "./path.json";
+import  mongoose  from "mongoose";
+
 
 require("dotenv").config(); //環境變數
 const AF = express();
 AF.use(express.json()); //回應能使用json格式
 AF.use(logger("dev")); //顯示呼叫的api在console畫面
 
+mongoose.connect('mongodb://localhost:27017/angel_fund_platform');
+const connection = mongoose.connection;
+connection.on('error', console.error.bind(console, 'connection error:'));
+connection.once("open", () => {
+    console.log('------------------------------------------------------');
+	console.log("MongoDB database connection established successfully");
+	console.log("The database is " + connection.name);
+
+});
 const CM_Addr = path.CreateManagement;
 const DM_Addr = path.DataManagement;
 var usrAddr = new Map();

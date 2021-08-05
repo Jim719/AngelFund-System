@@ -4,7 +4,8 @@ import { Grid, makeStyles, TextField, Typography, Button } from '@material-ui/co
 import Divider from '@material-ui/core/Divider';
 import Sidebar from '../component/Sidebar'
 import Dataphoto from '../assets/image/Data.png'
-import MyTables from '../component/MyTables'
+
+import { ProjectData_Tbl,InvestData_Tbl} from'../component/MyTables'
 import SwipeableViews from 'react-swipeable-views';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -223,13 +224,13 @@ const Match = () => {
                         </Tabs>
                         <SwipeableViews index={value} onChangeIndex={handleChange} style={{align:'center',width:'800px',marginBottom:'10px'}}>
                             <div className={classes.Proslide}>
-                                <MyTables
+                                <ProjectData_Tbl
                                     tableHead={tableHead}
                                     tableData={tableData}
                                 />
                             </div>
                             <div className={classes.Invslide}>
-                                <MyTables
+                                <InvestData_Tbl
                                     tableHead={tableHead}
                                     tableData={tableData}
                                 />
