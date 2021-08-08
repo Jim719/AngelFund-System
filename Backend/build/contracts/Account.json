@@ -30,16 +30,16 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"string\",\"name\":\"IDnum\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"e_addr\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"tel\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"CurrentAddr\",\"type\":\"string\"}],\"name\":\"set_info\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/C/Users/Jim/AngelFund-System/contracts/Account.sol\":\"Account\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/C/Users/Jim/AngelFund-System/contracts/Account.sol\":{\"keccak256\":\"0xc9635707e97f9d9b935009c16ef69457e96d9c2bfdd42d00d76d71933553b5fb\",\"urls\":[\"bzz-raw://339213a86ead2f12033e1c740d328a1b967efdac5f47c386ebc54a0b5bc285cc\",\"dweb:/ipfs/QmUFywbuTrSQwT8rFcJERZMhe4yRSWMiQ5VQ6VhycYzbor\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"string\",\"name\":\"IDnum\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"e_addr\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"tel\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"CurrentAddr\",\"type\":\"string\"}],\"name\":\"set_info\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/C/Users/Jim/AngelFund-System/Backend/contracts/Account.sol\":\"Account\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/C/Users/Jim/AngelFund-System/Backend/contracts/Account.sol\":{\"keccak256\":\"0xc9635707e97f9d9b935009c16ef69457e96d9c2bfdd42d00d76d71933553b5fb\",\"urls\":[\"bzz-raw://339213a86ead2f12033e1c740d328a1b967efdac5f47c386ebc54a0b5bc285cc\",\"dweb:/ipfs/QmUFywbuTrSQwT8rFcJERZMhe4yRSWMiQ5VQ6VhycYzbor\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "// SPDX-License-Identifier: MIT\r\npragma solidity >=0.5.22 <0.9.0;\r\nabstract contract Account{\r\n    function set_info(string memory IDnum,string memory e_addr ,string memory tel,string memory CurrentAddr)public virtual;\r\n    \r\n}\r\n",
-  "sourcePath": "C:\\Users\\Jim\\AngelFund-System\\contracts\\Account.sol",
+  "sourcePath": "C:\\Users\\Jim\\AngelFund-System\\Backend\\contracts\\Account.sol",
   "ast": {
-    "absolutePath": "/C/Users/Jim/AngelFund-System/contracts/Account.sol",
+    "absolutePath": "/C/Users/Jim/AngelFund-System/Backend/contracts/Account.sol",
     "exportedSymbols": {
       "Account": [
         13
@@ -227,7 +227,7 @@
   },
   "legacyAST": {
     "attributes": {
-      "absolutePath": "/C/Users/Jim/AngelFund-System/contracts/Account.sol",
+      "absolutePath": "/C/Users/Jim/AngelFund-System/Backend/contracts/Account.sol",
       "exportedSymbols": {
         "Account": [
           13
@@ -440,7 +440,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.3",
-  "updatedAt": "2021-08-03T13:35:14.237Z",
+  "updatedAt": "2021-08-08T13:39:59.436Z",
   "devdoc": {
     "methods": {}
   },

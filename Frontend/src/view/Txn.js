@@ -1,6 +1,6 @@
 import { React, useState } from 'react';
 import Sidebar from '../component/Sidebar'
-import { makeStyles, Typography, Button } from '@material-ui/core';
+import { makeStyles, Typography, Button, Divider } from '@material-ui/core';
 import SwipeableViews from 'react-swipeable-views';
 // import { MatchingProjectData_Tbl, MatchingInvestData_Tbl } from '../component/MyTables'
 import Tabs from '@material-ui/core/Tabs';
@@ -53,11 +53,16 @@ const useStyle = makeStyles({
 });
 
 const Txn = () => {
-    const [value, setValue] = useState(0);
+    const [value, setValue] = useState(0); //匹配資料設定值
     const classes = useStyle();
     const handleChange = (event, newValue) => {
         localStorage.setItem("status_tab", newValue);
         setValue(newValue);
+    };
+    const [Txnvalue, setTxnValue] = useState(0); //匹配資料設定值
+    const TxnhandleChange = (event, newValue) => {
+        localStorage.setItem("status_tab", newValue);
+        setTxnValue(newValue);
     };
     return (
         <Sidebar>
@@ -83,14 +88,7 @@ const Txn = () => {
                                     <ListItemText primary="投資人帳號" secondary="Jan 9, 2014" />
                                 </ListItem>
                             </div>
-                            {/* <ListItem>
-                                <ListItemAvatar>
-                                    <Avatar>
-                                        <FingerprintIcon />
-                                    </Avatar>
-                                </ListItemAvatar>
-                                <ListItemText primary="投資到期日" secondary="Jan 7, 2014" />
-                            </ListItem> */}
+                
                             <div>
                                 <ListItem>
                                     <ListItemAvatar>
@@ -158,6 +156,109 @@ const Txn = () => {
                     </SwipeableViews>
                 </div>
                 <Button color='Primary' variant="contained" style={{ marginLeft: '930px' }}> Submit</Button>
+
+                <Divider/>
+
+                <Typography variant="h5" align='center' fontWeight='bolder' style={{ marginTop: '10px' }}>交易進行</Typography>
+                <Tabs value={Txnvalue} fullWidth onChange={TxnhandleChange} className={classes.Tabs}>
+                    <Tab label="企業方交易" style={{ backgroundColor: '#DAF7A6', fontWeight: 'bolder' }} />
+                    <Tab label="投資方交易" style={{ backgroundColor: '#5DADE2', fontWeight: 'bolder' }} />
+                </Tabs>
+                 <div className={classes.Matching}>
+                    <SwipeableViews index={Txnvalue} onChangeIndex={TxnhandleChange} style={{ align: 'center', marginBottom: '10px' }}>
+                        <div className={classes.ProMatchdata}>
+                            <div>
+                                <ListItem>
+                                    <ListItemAvatar>
+                                        <Avatar>
+                                            <SupervisorAccountIcon />
+                                        </Avatar>
+                                    </ListItemAvatar>
+                                    <ListItemText primary="專案名稱" secondary="Jan 9, 2014" />
+                                </ListItem>
+                            </div>
+                            <div>
+
+                            <ListItem>
+                                <ListItemAvatar>
+                                    <Avatar>
+                                        <FingerprintIcon />
+                                    </Avatar>
+                                </ListItemAvatar>
+                                <ListItemText primary="目標金額" secondary="Jan 7, 2014" />
+                            </ListItem>
+                            </div>
+                            <div>
+                                <ListItem>
+                                    <ListItemAvatar>
+                                        <Avatar>
+                                            <MailIcon />
+                                        </Avatar>
+                                    </ListItemAvatar>
+                                    <ListItemText primary="當前金額" secondary="July 20, 2014" />
+                                </ListItem>
+                            </div>
+                            <div>
+                                <ListItem>
+                                    <ListItemAvatar>
+                                        <Avatar>
+                                            <PhoneInTalkIcon />
+                                        </Avatar>
+                                    </ListItemAvatar>
+                                    <ListItemText primary="應付利息" secondary="July 20, 2014" />
+                                </ListItem>
+                            </div>
+                        </div>
+
+                        <div className={classes.InvMatchdata}>
+                            <div>
+                                <ListItem>
+                                    <ListItemAvatar>
+                                        <Avatar>
+                                            <PhoneInTalkIcon />
+                                        </Avatar>
+                                    </ListItemAvatar>
+                                    <ListItemText primary="專案名稱" secondary="July 20, 2014" />
+                                </ListItem>
+                            </div>
+                            <div>
+                                <ListItem>
+                                    <ListItemAvatar>
+                                        <Avatar>
+                                            <SupervisorAccountIcon />
+                                        </Avatar>
+                                    </ListItemAvatar>
+                                    <ListItemText primary="投資金額" secondary="Jan 9, 2014" />
+                                </ListItem>
+                            </div>
+                            <div>
+                                <ListItem>
+                                    <ListItemAvatar>
+                                        <Avatar>
+                                            <FingerprintIcon />
+                                        </Avatar>
+                                    </ListItemAvatar>
+                                    <ListItemText primary="當前金額" secondary="Jan 7, 2014" />
+                                </ListItem>
+                            </div>
+                            <div>
+                                <ListItem>
+                                    <ListItemAvatar>
+                                        <Avatar>
+                                            <MailIcon />
+                                        </Avatar>
+                                    </ListItemAvatar>
+                                    <ListItemText primary="可收取利息" secondary="July 20, 2014" />
+                                </ListItem>
+                            </div>
+                        </div>
+                    </SwipeableViews>
+                </div>
+                <Button color='Secondary' variant="contained" style={{ marginLeft: '930px' }}> Submit</Button>
+
+
+
+                
             </div>
 
         </Sidebar>

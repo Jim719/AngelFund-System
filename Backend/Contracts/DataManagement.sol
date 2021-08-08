@@ -115,7 +115,7 @@ contract DataManagement{
                 match_result[pro_idds[i]] = match_funder(fun_idds[n],interest[n],i_amounts[n]);
                 Invmatch_result[fun_idds[n]] = match_Proside(pro_idds[i],names[i],t_amounts[i],i_returns[i]);
                 statements[n] = 0;
-                Transaction Txn = new Transaction(pro_idds[i],fun_idds[n],address(this));
+                Transaction Txn = new Transaction(pro_idds[i],fun_idds[n],address(this)); //New一個TXN實體，傳入建構子企業ID、投資者ID、位址
                 Txn_addr[pro_idds[i]] = address(Txn);
                 Txn_addr[fun_idds[n]] = address(Txn);
                 count++;

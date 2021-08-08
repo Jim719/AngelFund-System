@@ -5,9 +5,15 @@ import { getContractInstance, contract_call, contract_send, string_to_bytes32, b
 import CreateManagement from "./build/contracts/CreateManagement.json";
 import DataManagement from "./build/contracts/DataManagement.json";
 import path from "./path.json";
-import  mongoose  from "mongoose";
-
-
+import mongoose from "mongoose";
+import User from './models/User_Model'
+import Account from './models/User_Account_Models'
+import ProjectData from './models/ProjectData_Model'
+import FunderData from './models/FunderData_Model'
+import MatchingData_Pro from './models/MatchingData_ProjectSide_Model'
+import MatchingData_Fun from './models/MatchingData_FunderSide_Model'
+import ProjectWallet from './models/ProjectWallet_Model'
+import FunderWallet from './models/FunderWallet_Model'
 require("dotenv").config(); //環境變數
 const AF = express();
 AF.use(express.json()); //回應能使用json格式
@@ -18,8 +24,8 @@ const connection = mongoose.connection;
 connection.on('error', console.error.bind(console, 'connection error:'));
 connection.once("open", () => {
     console.log('------------------------------------------------------');
-	console.log("MongoDB database connection established successfully");
-	console.log("The database is " + connection.name);
+    console.log("MongoDB database connection established successfully");
+    console.log("The database is " + connection.name);
 
 });
 const CM_Addr = path.CreateManagement;
@@ -46,9 +52,18 @@ const create = async (req, res) => {
         current_user = id;
         category = kind;
         usrAddr.set(id, useraddr);
+
+        await User({ //寫入User資料庫
+            user_id: id,
+            user_password: password,
+            user_kind: kind,
+        }).save();
+
         res.json(txn_data)
+        console.log('創建成功');
     }
     catch (e) {
+        console.log(e);
         res.json("創建失敗");
     }
 
@@ -60,19 +75,25 @@ const login = async (req, res) => {
     const web3 = await connect_to_web3();
     const accounts = await web3.eth.getAccounts();
     const contract = await getContractInstance(web3, CreateManagement.abi, CM_Addr);
-    const loggin = await contract_call(contract, 'login', [id, password], {
-        from: accounts[0],
-        gas: 6000000,
-    })
-    let kind = await contract_call(contract, 'get_category', [id], {
-        from: accounts[0],
-        gas: 6000000,
-    })
-    let transferkind = bytes32_to_string(kind);
-    current_user = id;
-    category = transferkind;
-    console.log(category);
-    res.json(loggin);
+    try {
+        const loggin = await contract_call(contract, 'login', [id, password], {
+            from: accounts[0],
+            gas: 6000000,
+        })
+        let kind = await contract_call(contract, 'get_category', [id], {
+            from: accounts[0],
+            gas: 6000000,
+        })
+        let transferkind = bytes32_to_string(kind);
+        current_user = id;
+        category = transferkind;
+        console.log(category);
+        res.json(loggin);
+    }
+    catch (e) {
+        console.log(e);
+        res.json("創建失敗");
+    }
 }
 //設定使用者基本資料
 const updateAccount = async (req, res) => {
@@ -87,6 +108,14 @@ const updateAccount = async (req, res) => {
             gas: 6000000,
         })
         res.json(update);
+        const test = await Account({ //寫入Account資料庫
+            user_id: current_user,
+            ID_OR_CompanyNunumber: ID_OR_companyNumber,
+            Email: email,
+            PhoneNumber: tel,
+            Charger: charger,
+        }).save();
+        console.log('創建成功');
     }
     catch (e) {
         res.json("創建失敗!");
@@ -128,11 +157,23 @@ const set_ProjectData = async (req, res) => {
             gas: 6000000,
         })
         res.json(result);
+
+        const test = await ProjectData({ //寫入ProjectData資料庫
+            user_id: current_user,
+            eventnumber: eventnumber,
+            project_Name: project_Name,
+            project_Indtroduce: project_Indtroduce,
+            project_Endday: project_Endday,
+            Target_Amount: Target_Amount,
+            interest_Return: interest_Return,
+        }).save();
+        console.log('創建成功');
+        console.log(test);
     }
     else {
         res.json("身分別無效");
     }
-    console.log("身分為: "+category+',ID是:'+current_user);
+    console.log("身分為: " + category + ',ID是:' + current_user);
 }
 //取得特定企業方投資專案資料
 const get_UniqueProjectData = async (req, res) => {
@@ -174,11 +215,22 @@ const set_FundertData = async (req, res) => {
             gas: 6000000,
         })
         res.json(result);
+
+        const test = await FunderData({ //寫入FunderData資料庫
+            user_id: current_user,
+            investment_number: investment_number,
+            investment_Duration: investment_Duration,
+            investment_Amount: investment_Amount,
+            investment_Return: investment_Return,
+
+        }).save();
+        console.log('創建成功');
+        console.log(test);
     }
-    else{
+    else {
         res.json("身分別錯誤")
     }
-    console.log("身分為: "+category+',ID是:'+current_user);
+    console.log("身分為: " + category + ',ID是:' + current_user);
 }
 
 //取得特定投資方資料
@@ -231,13 +283,29 @@ const get_MatchingData = async (req, res) => {
         gas: 6000000,
     })
     let newresult = bytes32_to_string(result["0"]);
-    res.json({
-        userID: newresult,
-        // investment_Duration: newdate,
-        investment_Return: result["1"],
-        investment_Amount: result["2"]
+    // res.json({
+    //     userID: newresult,
+    //     investment_Return: result["1"],
+    //     investment_Amount: result["2"]
 
-    });
+    // });
+
+    const test = await MatchingData_Pro({ //寫入FunderData資料庫
+        user_id: current_user,
+        Funder_ID: newresult,
+        investment_Return: result["1"],
+        investment_Amount: result["2"],
+
+    }).save();
+    console.log('創建成功');
+    console.log(test);
+    let MDP = await MatchingData_Pro.findOne({ user_id: current_user }).exec();
+    res.json({
+        userID: MDP.Funder_ID,
+        investment_Return: MDP.investment_Return,
+        investment_Amount: MDP.investment_Amount
+    })
+    // res.json( MDP.Funder_ID, MDP.investment_Return,MDP.investment_Amount);
 }
 
 //以投資者角度取得匹配資料
@@ -253,14 +321,32 @@ const get_InvMatchingData = async (req, res) => {
     })
     let newresult = bytes32_to_string(result["0"]);
     let names = bytes32_to_string(result["1"]);
-    res.json({
-        userID: newresult,
-        // investment_Duration: newdate,
-        Name: names,
-        Target_Amount:result["2"],
-        interest_Return: result["3"]
+    // res.json({
+    //     userID: newresult,
+    //     // investment_Duration: newdate,
+    //     Name: names,
+    //     Target_Amount: result["2"],
+    //     interest_Return: result["3"]
 
-    });
+    // });
+    const test = await MatchingData_Fun({ //寫入FunderData資料庫
+        user_id: current_user,
+        Enterprise_ID: newresult,
+        Project_Name: names,
+        Target_Amount: result["2"],
+        Interest_Return: result["2"],
+    }).save();
+
+    console.log('創建成功');
+    console.log(test);
+    let MDF = await MatchingData_Fun.findOne({ user_id: current_user }).exec();
+    res.json({
+        userID: MDF.Enterprise_ID,
+        Project_Name: MDF.Project_Name,
+        Target_Amount: MDF.Target_Amount,
+        Interest_Return: MDF.Interest_Return
+    })
+
 }
 
 //計算匹配成功次數
@@ -276,6 +362,7 @@ const get_counted = async (req, res) => {
     res.json(result);
 }
 
+//交易開始進行
 const set_txn = async (req, res) => {
     const { } = req.query;
     const web3 = await connect_to_web3();
@@ -294,52 +381,90 @@ const set_txn = async (req, res) => {
 }
 
 const get_TXNEnterpriserWallet = async (req, res) => {
-    const { } = req.query;
-    const web3 = await connect_to_web3();
-    const accounts = await web3.eth.getAccounts();
-    const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
-    const uid = string_to_bytes32(current_user);
-    const txn_addr = await contract_call(contract, 'get_Txnaddr', [uid], {
-        from: accounts[0],
-        gas: 6000000,
-    })
-    const result = await contract_call(contract, 'get_TXNEnterpriserWallet', [txn_addr], {
-        from: accounts[0],
-        gas: 6000000,
-    })
-    let newresult = bytes32_to_string(result["0"]);
-    res.json({
-        userID: newresult,
-        project_name: result["1"],
-        Target_amount: result["2"],
-        interest_rate: result["3"],
-        current_amount: result["4"],
-        interest_payable: result["5"]
-    });
+    if (category === "Enterprise") {
+        const { } = req.query;
+        const web3 = await connect_to_web3();
+        const accounts = await web3.eth.getAccounts();
+        const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
+        const uid = string_to_bytes32(current_user);
+        const txn_addr = await contract_call(contract, 'get_Txnaddr', [uid], {
+            from: accounts[0],
+            gas: 6000000,
+        })
+        const result = await contract_call(contract, 'get_TXNEnterpriserWallet', [txn_addr], {
+            from: accounts[0],
+            gas: 6000000,
+        })
+        let newresult = bytes32_to_string(result["0"]);
+        
+        res.json({
+            userID: newresult,
+            project_name: result["1"],
+            Target_amount: result["2"],
+            interest_rate: result["3"],
+            current_amount: result["4"],
+            interest_payable: result["5"]
+        });   
+
+        const test = await ProjectWallet({ //寫入Project Wallet資料庫
+            user_id: current_user,            
+            Project_Name: result["1"],
+            Target_Amount: result["2"],
+            Current_Amount:result["4"],
+            Interest_Payable: result["5"],
+        }).save();
+    
+        console.log('創建成功');
+        console.log(test);
+    }
+    else {
+        res.json('身分錯誤，請重新確認')
+    }
 }
 
 const get_TXNFunderWallet = async (req, res) => {
-    const { } = req.query;
-    const web3 = await connect_to_web3();
-    const accounts = await web3.eth.getAccounts();
-    const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
-    const uid = string_to_bytes32(current_user);
-    const txn_addr = await contract_call(contract, 'get_Txnaddr', [uid], {
-        from: accounts[0],
-        gas: 6000000,
-    })
-    const result = await contract_call(contract, 'get_TXNFunderWallet', [txn_addr], {
-        from: accounts[0],
-        gas: 6000000,
-    })
-    let newresult = bytes32_to_string(result["0"]);
-    res.json({
-        userID: newresult,
-        investment_Return: result["1"],
-        investment_amount: result["2"],
-        current_money: result["3"],
-        interest_receivable: result["4"],
-    });
+    if (category === "Funder") {
+        const { } = req.query;
+        const web3 = await connect_to_web3();
+        const accounts = await web3.eth.getAccounts();
+        const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
+        const uid = string_to_bytes32(current_user);
+        const txn_addr = await contract_call(contract, 'get_Txnaddr', [uid], {
+            from: accounts[0],
+            gas: 6000000,
+        })
+        const result = await contract_call(contract, 'get_TXNFunderWallet', [txn_addr], {
+            from: accounts[0],
+            gas: 6000000,
+        })
+        const Ent_result = await contract_call(contract, 'get_TXNEnterpriserWallet', [txn_addr], {
+            from: accounts[0],
+            gas: 6000000,
+        })
+        let newresult = bytes32_to_string(result["0"]);       
+        res.json({
+            userID: newresult,
+            investment_Return: result["1"],
+            investment_amount: result["2"],
+            current_money: result["3"],
+            interest_receivable: result["4"],
+        });
+        
+        const test = await FunderWallet({ //寫入Project Wallet資料庫
+            user_id: current_user,            
+            Project_Name: Ent_result["1"],
+            Investment_Amount: result["2"],
+            Current_Amount:result["3"],
+            Interest_Receivable: result["4"],
+        }).save();
+    
+        console.log('創建成功');
+        console.log(test);
+        
+    }
+    else {
+        res.json('身分錯誤，請重新確認')
+    }
 }
 
 AF.post('/create', create); //創建帳號

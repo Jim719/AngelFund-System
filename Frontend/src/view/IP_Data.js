@@ -74,7 +74,7 @@ const Match = () => {
     }
 
     const tableData = [ //專案資料
-        proData('Frozen yoghurt', 159, "擴建廠房增加營收", "19,283,000"),
+        proData('Frozen yoghurt', '擴建廠房增加營收，拓展計劃', "擴建廠房增加營收", "19,283,000"),
         proData('Ice cream sandwich', 237, "新產品上市增加營收", "723,562,300"),
         proData('Eclair', 262, "合併公司增加營收", "34,843,500"),
 
