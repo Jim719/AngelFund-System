@@ -71,8 +71,7 @@ export default function Login() {
     if (id && pwd) {
       console.log(id, pwd);
     }
-    history.push("/HomePage");
-        
+    history.push("/HomePage");        
   }
 
   return (
