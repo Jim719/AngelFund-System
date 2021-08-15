@@ -14,7 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
-
+import { apiLogin } from '../api'
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -46,34 +46,34 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-  
+
 }));
 
 export default function Login() {
   let history = useHistory();
   const classes = useStyles();
   const [id, setId] = useState("");
-  const [pwd, setPwd] = useState("");
-  const [idError, setIdError] = useState(false);
-  const [pwdError, setPwdError] = useState(false);
+  const [password, setPwd] = useState("");
 
-  const result = (e) => {
-    setIdError(false);
-    setPwdError(false);
+  const result = async (e) => {
     e.preventDefault()
-    if (id === "") {
-      setIdError(true);
+    if (id && password) {
+      const Login = await apiLogin({ id, password });
+      console.log(id, password);
+      console.log('-------------------')
+      console.log(Login.data);
+      if (Login.data === 'login success') {
+        console.log('要登入囉')
+        history.push("/HomePage");
+      }
+      else {
+        alert('登入失敗，請在試一次')
+      }
     }
-    if (pwd === "") {
-      setPwdError(true);
+    else {
+      alert('有空白欄位 ，請在試一次')
     }
-
-    if (id && pwd) {
-      console.log(id, pwd);
-    }
-    history.push("/HomePage");        
   }
-
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -96,7 +96,7 @@ export default function Login() {
             name="email"
             autoComplete="email"
             autoFocus
-            error={idError}
+          // error={idError}
           />
           <TextField
             onChange={(e) => setPwd(e.target.value)}
@@ -109,7 +109,7 @@ export default function Login() {
             type="password"
             id="password"
             autoComplete="current-password"
-            error={pwdError}
+          // error={pwdError}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="secondary" />}
@@ -121,7 +121,7 @@ export default function Login() {
             variant="contained"
             color="primary"
             className={classes.submit}
-            
+
             endIcon={<ArrowRightOutlinedIcon />}
           >
             登入

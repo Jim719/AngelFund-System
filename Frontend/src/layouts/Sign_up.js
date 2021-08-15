@@ -1,4 +1,5 @@
-import React from 'react';
+import  React, {useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,6 +15,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import ArrowRightOutlinedIcon from '@material-ui/icons/ArrowRightOutlined';
+import {apiCreate} from '../api'
 
 function Copyright() {
   return (
@@ -50,6 +52,25 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
   const classes = useStyles();
+  let history = useHistory();
+  const [id, setId] = useState("");
+  const [password, setPwd] = useState("");
+  const [kind, setKind] = useState("");
+  
+
+  const submit = async (e) => {
+    e.preventDefault()
+    if (id && password &&kind) {
+    const create = await apiCreate({id,password,kind});
+      console.log(id,password,kind);
+      console.log('-------------------')
+      console.log(create);
+      // history.push("/HomePage");  
+    }
+    
+  }
+
+  
 
   return (
     <Container component="main" maxWidth="xs">
@@ -61,7 +82,7 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           帳號註冊
         </Typography>
-        <form className={classes.form} noValidate >
+        <form className={classes.form} noValidate onSubmit={submit}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -88,10 +109,12 @@ export default function SignUp() {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                onChange={(e) => setId(e.target.value)}
+                defaultValue={id}
                 variant="outlined"
                 required
                 fullWidth
-                id="email"
+                id="user_id"
                 label="帳號"
                 name="UserId"
                 autoComplete="UserId"
@@ -99,21 +122,23 @@ export default function SignUp() {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                onChange={(e) => setPwd(e.target.value)}
+                defaultValue={password}
                 variant="outlined"
                 required
                 fullWidth
                 name="password"
                 label="密碼"
                 type="password"
-                id="password"
+                id="user_password"
                 autoComplete="current-password"
               />
             </Grid>
             <Grid item xs={12}>
               <FormLabel style={{ fontsize: 20 }}> 角色種類： </FormLabel>
               <RadioGroup aria-label="CATEGORY " name="Category" row>
-                <FormControlLabel value="投資" label="投資者" control={<Radio color="primary" />} />
-                <FormControlLabel value="企業方" label="企業方" control={<Radio color="primary" />} />
+                <FormControlLabel value="Funder" label="投資者" control={<Radio color="primary" />}  defaultValue={kind} onChange={(e) => setKind(e.target.value)}/>
+                <FormControlLabel value="Enterprise" label="企業方" control={<Radio color="primary" />} defaultValue={kind} onChange={(e) => setKind(e.target.value)} />
               </RadioGroup>
 
             </Grid>

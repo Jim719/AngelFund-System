@@ -1,5 +1,6 @@
 import express from "express";
 import logger from "morgan";
+import cors from "cors";
 import { connect_to_web3 } from "./function/web3";
 import { getContractInstance, contract_call, contract_send, string_to_bytes32, bytes32_to_string } from "./function/contract";
 import CreateManagement from "./build/contracts/CreateManagement.json";
@@ -18,6 +19,12 @@ require("dotenv").config(); //環境變數
 const AF = express();
 AF.use(express.json()); //回應能使用json格式
 AF.use(logger("dev")); //顯示呼叫的api在console畫面
+AF.use(cors({ 
+    origin: ['http://localhost:3000',
+    'http://172.20.10.5:3000'],
+    credentials: true,
+
+}));
 
 mongoose.connect('mongodb://localhost:27017/angel_fund_platform');
 const connection = mongoose.connection;
@@ -36,7 +43,7 @@ var category;
 
 //創建使用者
 const create = async (req, res) => {
-    const { id, password, kind } = req.query
+    const { id, password, kind } = req.body
     const web3 = await connect_to_web3();
     const accounts = await web3.eth.getAccounts();
     const contract = await getContractInstance(web3, CreateManagement.abi, CM_Addr);
@@ -60,6 +67,8 @@ const create = async (req, res) => {
         }).save();
 
         res.json(txn_data)
+        console.log(txn_data);
+        console.log(id,password,kind);
         console.log('創建成功');
     }
     catch (e) {
@@ -71,7 +80,7 @@ const create = async (req, res) => {
 
 //使用者登入
 const login = async (req, res) => {
-    const { id, password } = req.query;
+    const { id, password } = req.body;
     const web3 = await connect_to_web3();
     const accounts = await web3.eth.getAccounts();
     const contract = await getContractInstance(web3, CreateManagement.abi, CM_Addr);
@@ -88,6 +97,8 @@ const login = async (req, res) => {
         current_user = id;
         category = transferkind;
         console.log(category);
+        console.log(loggin);
+        console.log(id,password);
         res.json(loggin);
     }
     catch (e) {
@@ -468,7 +479,7 @@ const get_TXNFunderWallet = async (req, res) => {
 }
 
 AF.post('/create', create); //創建帳號
-AF.get('/login', login);    //登入
+AF.post('/login', login);    //登入
 AF.post('/updateAccount', updateAccount);       //輸入個人資料
 AF.get('/get_AccountInfo', get_AccountInfo);    //取得個人資料
 AF.post('/set_ProjectData', set_ProjectData);   //輸入被投資專案資料

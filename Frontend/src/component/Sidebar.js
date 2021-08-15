@@ -1,11 +1,11 @@
 import React from 'react';
 import List from '@material-ui/core/List';
-import { Drawer, makeStyles, Typography } from '@material-ui/core';
+import { Button, Drawer, makeStyles, Typography } from '@material-ui/core';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import { AddCircleOutlined } from '@material-ui/icons';
+import { AddCircleOutlined, FormatBold } from '@material-ui/icons';
 import AcUnitIcon from '@material-ui/icons/AcUnit';
 import { useHistory, useLocation } from 'react-router-dom';
 
@@ -95,6 +95,12 @@ const Sidebar = ({ children }) => {
                             </ListItem>
                         ))}
                     </List>
+                    <Button
+                    style={{marginLeft:'100'}}
+                    onClick={() => {  history.push("/Login")}}
+                    variant="contained"
+                    color="Secondary"
+                    >登出</Button>
                 </Drawer>
             </div>
             <div>

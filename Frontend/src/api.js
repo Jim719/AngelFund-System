@@ -1,12 +1,12 @@
 import axios from "axios";
 
-export const test_serverAddress = "localhost:3000";
+export const test_serverAddress = "localhost:5000";
 export const baseURL = `http://${test_serverAddress}`;
 const request = axios.create({ baseURL: `${baseURL}`, withCredentials: true });
 
 //帳號
-export const apiCreate = () => request.post("/create");//創建帳號
-export const apiLogin = () => request.get("/login");//登入帳號
+export const apiCreate = (data) => request.post("/create",data);//創建帳號
+export const apiLogin = (data) => request.post("/login",data);//登入帳號
 
 //個人資料
 export const api_UpdateAccount = () => request.post("/updateAccount");//個人資料輸入
@@ -27,6 +27,6 @@ export const api_GetInvMatchingData = () => request.get("/get_InvMatchingData");
 export const api_GetCounted = () => request.get("/get_counted");//取得匹配成功資料
 
 //交易
-export const api_Settxn= () => request.get("/set_txn");//交易開始
+export const api_Settxn= () => request.set("/set_txn");//交易開始
 export const api_GetTXNEnterpriserWallet = () => request.get("/get_TXNEnterpriserWallet");//取得交易完成後企業方金額帳目
 export const api_GetTXNFunderWallet = () => request.get("/get_TXNFunderWallet");//取得交易完成後投資方金額帳目
