@@ -9,7 +9,7 @@ export const apiCreate = (data) => request.post("/create",data);//創建帳號
 export const apiLogin = (data) => request.post("/login",data);//登入帳號
 
 //個人資料
-export const api_UpdateAccount = () => request.post("/updateAccount");//個人資料輸入
+export const api_UpdateAccount = (data) => request.post("/updateAccount",data);//個人資料輸入
 export const api_GetAccountInfo = () => request.get("/get_AccountInfo");//個人資料取得
 
 //投資資料

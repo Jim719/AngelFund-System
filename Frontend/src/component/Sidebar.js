@@ -19,13 +19,13 @@ const useStyles = makeStyles({
     },
     root: {
         display: "flex",
-        
+
     },
-    background:{
+    background: {
         display: "flex",
-        backgroundColor:'#EFB28C',
-        width:'100vw',
-        height:'100vh',
+        backgroundColor: '#EFB28C',
+        width: '100vw',
+        height: '100vh',
     },
     active: {
         background: "#E5E5E5"
@@ -59,10 +59,10 @@ const Sidebar = ({ children }) => {
             text: "交易專區",
             icon: <AddCircleOutlined color="primary" />,
             path: '/Txn'
-        },        
+        },
     ]
     return (
-        <div className={classes.background}>            
+        <div className={classes.background}>
             <div className={classes.root}>
                 <Drawer
                     className={classes.drawer}
@@ -78,7 +78,7 @@ const Sidebar = ({ children }) => {
                             hello Jim
                         </Typography>
                         <Divider />
- 
+
                     </div>
 
                     <List>
@@ -96,10 +96,10 @@ const Sidebar = ({ children }) => {
                         ))}
                     </List>
                     <Button
-                    style={{marginLeft:'100'}}
-                    onClick={() => {  history.push("/Login")}}
-                    variant="contained"
-                    color="Secondary"
+                        style={{ marginLeft: '100' }}
+                        onClick={() => { history.push("/Login") }}
+                        variant="contained"
+                        color="Secondary"
                     >登出</Button>
                 </Drawer>
             </div>

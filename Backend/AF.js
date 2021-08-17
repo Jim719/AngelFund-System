@@ -19,9 +19,9 @@ require("dotenv").config(); //環境變數
 const AF = express();
 AF.use(express.json()); //回應能使用json格式
 AF.use(logger("dev")); //顯示呼叫的api在console畫面
-AF.use(cors({ 
+AF.use(cors({
     origin: ['http://localhost:3000',
-    'http://172.20.10.5:3000'],
+        'http://172.20.10.5:3000'],
     credentials: true,
 
 }));
@@ -68,7 +68,7 @@ const create = async (req, res) => {
 
         res.json(txn_data)
         console.log(txn_data);
-        console.log(id,password,kind);
+        console.log(id, password, kind);
         console.log('創建成功');
     }
     catch (e) {
@@ -93,12 +93,20 @@ const login = async (req, res) => {
             from: accounts[0],
             gas: 6000000,
         })
+        const useraddr = await contract_call(contract, 'get_add', [id], {
+            from: accounts[0],
+            gas: 6000000,
+        })
+        current_user = id;
+        category = kind;
+        usrAddr.set(id, useraddr);
+
         let transferkind = bytes32_to_string(kind);
         current_user = id;
         category = transferkind;
         console.log(category);
         console.log(loggin);
-        console.log(id,password);
+        console.log(id, password);
         res.json(loggin);
     }
     catch (e) {
@@ -106,19 +114,19 @@ const login = async (req, res) => {
         res.json("創建失敗");
     }
 }
+
 //設定使用者基本資料
 const updateAccount = async (req, res) => {
-    const { ID_OR_companyNumber, email, tel, charger } = req.query;
+    const { ID_OR_companyNumber, email, tel, charger } = req.body;
     const web3 = await connect_to_web3();
     const accounts = await web3.eth.getAccounts();
     const contract = await getContractInstance(web3, CreateManagement.abi, CM_Addr);
-    const useradddr = usrAddr.get(current_user);
+    const useradddr =await usrAddr.get(current_user);
     try {
-        const update = await contract_send(contract, 'update_user_account', [useradddr, ID_OR_companyNumber, email, tel, charger], {
-            from: accounts[1],
-            gas: 6000000,
-        })
-        res.json(update);
+    const update = await contract_send(contract, 'update_user_account', [useradddr, ID_OR_companyNumber, email, tel, charger], {
+        from: accounts[1],
+        gas: 6000000,
+    })
         const test = await Account({ //寫入Account資料庫
             user_id: current_user,
             ID_OR_CompanyNunumber: ID_OR_companyNumber,
@@ -126,12 +134,15 @@ const updateAccount = async (req, res) => {
             PhoneNumber: tel,
             Charger: charger,
         }).save();
-        console.log('創建成功');
+            console.log(update);
+            console.log('創建成功');            
+        res.json(test);
     }
     catch (e) {
         res.json("創建失敗!");
+        console.log(e);
     }
-
+   
 }
 //取得使用者基本資料
 const get_AccountInfo = async (req, res) => {
@@ -407,7 +418,7 @@ const get_TXNEnterpriserWallet = async (req, res) => {
             gas: 6000000,
         })
         let newresult = bytes32_to_string(result["0"]);
-        
+
         res.json({
             userID: newresult,
             project_name: result["1"],
@@ -415,16 +426,16 @@ const get_TXNEnterpriserWallet = async (req, res) => {
             interest_rate: result["3"],
             current_amount: result["4"],
             interest_payable: result["5"]
-        });   
+        });
 
         const test = await ProjectWallet({ //寫入Project Wallet資料庫
-            user_id: current_user,            
+            user_id: current_user,
             Project_Name: result["1"],
             Target_Amount: result["2"],
-            Current_Amount:result["4"],
+            Current_Amount: result["4"],
             Interest_Payable: result["5"],
         }).save();
-    
+
         console.log('創建成功');
         console.log(test);
     }
@@ -452,7 +463,7 @@ const get_TXNFunderWallet = async (req, res) => {
             from: accounts[0],
             gas: 6000000,
         })
-        let newresult = bytes32_to_string(result["0"]);       
+        let newresult = bytes32_to_string(result["0"]);
         res.json({
             userID: newresult,
             investment_Return: result["1"],
@@ -460,18 +471,18 @@ const get_TXNFunderWallet = async (req, res) => {
             current_money: result["3"],
             interest_receivable: result["4"],
         });
-        
+
         const test = await FunderWallet({ //寫入Project Wallet資料庫
-            user_id: current_user,            
+            user_id: current_user,
             Project_Name: Ent_result["1"],
             Investment_Amount: result["2"],
-            Current_Amount:result["3"],
+            Current_Amount: result["3"],
             Interest_Receivable: result["4"],
         }).save();
-    
+
         console.log('創建成功');
         console.log(test);
-        
+
     }
     else {
         res.json('身分錯誤，請重新確認')

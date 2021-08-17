@@ -65,7 +65,10 @@ export default function SignUp() {
       console.log(id,password,kind);
       console.log('-------------------')
       console.log(create);
-      // history.push("/HomePage");  
+      history.push("/HomePage");  
+    }
+    else{
+      alert('有空白欄位 ，請在試一次');
     }
     
   }
