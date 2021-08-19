@@ -1,4 +1,4 @@
-import { React, useState } from 'react';
+import { React, useState,useEffect } from 'react';
 import '../assets/CSS/Main.css';
 import { makeStyles, TextField, Typography, Button } from '@material-ui/core';
 import Sidebar from '../component/Sidebar'
@@ -11,7 +11,7 @@ import PhoneInTalkIcon from '@material-ui/icons/PhoneInTalk';
 import ListItemText from '@material-ui/core/ListItemText';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import Info from '../assets/image/Info.jpg'
-import { api_UpdateAccount } from '../api'
+import { api_UpdateAccount,api_GetAccountInfo } from '../api'
 
 const useStyle = makeStyles({
     content: {
@@ -57,19 +57,32 @@ const Information = () => {
     const [ID_OR_companyNumber, setId_or_number] = useState("");
     const [email, setEmail] = useState("");
     const [tel, setTel] = useState("");
+    const [userData,setUserdata] = useState("")
+
+    useEffect(() => { //於畫面render後先執行
+        ShowUserData();
+    }, []);
+
+    const ShowUserData=async()=>{
+        const userinfo = await api_GetAccountInfo();
+        await setUserdata(userinfo.data);
+    }
 
     const submit = async (e) => {
         e.preventDefault()
         if (charger && ID_OR_companyNumber && email && tel) {
-          const Account = await api_UpdateAccount({ID_OR_companyNumber, email,tel,charger});
-          console.log(charger,ID_OR_companyNumber,email, tel);
-          console.log('-------------------')
-          console.log(Account);
+            const Account = await api_UpdateAccount({ ID_OR_companyNumber, email, tel, charger });
+            console.log(Account);
+            console.log('-------------------')
+            const userinfo = await api_GetAccountInfo();
+            await setUserdata(userinfo.data);
+            console.log(userData);
         }
         else {
-          alert('有空白欄位 ，請在試一次')
+            alert('有空白欄位 ，請在試一次')
         }
-      }
+    }
+
 
     return (
         <>
@@ -148,7 +161,7 @@ const Information = () => {
                                     <SupervisorAccountIcon />
                                 </Avatar>
                             </ListItemAvatar>
-                            <ListItemText primary="負責人" secondary="Jan 9, 2014" />
+                            <ListItemText primary="負責人" secondary={userData ? userData.Charger : "---"}/>
                         </ListItem>
                         <ListItem>
                             <ListItemAvatar>
@@ -156,7 +169,7 @@ const Information = () => {
                                     <FingerprintIcon />
                                 </Avatar>
                             </ListItemAvatar>
-                            <ListItemText primary="公司號或身分證號" secondary="Jan 7, 2014" />
+                            <ListItemText primary="公司號或身分證號" secondary={userData ? userData.ID_OR_CompanyNunumber : "---"} />
                         </ListItem>
                         <ListItem>
                             <ListItemAvatar>
@@ -164,7 +177,7 @@ const Information = () => {
                                     <MailIcon />
                                 </Avatar>
                             </ListItemAvatar>
-                            <ListItemText primary="信箱" secondary="July 20, 2014" />
+                            <ListItemText primary="信箱" secondary={userData ? userData.Email : "---"} />
                         </ListItem>
                         <ListItem>
                             <ListItemAvatar>
@@ -172,7 +185,7 @@ const Information = () => {
                                     <PhoneInTalkIcon />
                                 </Avatar>
                             </ListItemAvatar>
-                            <ListItemText primary="電話號碼" secondary="July 20, 2014" />
+                            <ListItemText primary="電話號碼" secondary={userData ? userData.PhoneNumber : "---"} />
                         </ListItem>
                         {/* </List> */}
                     </div>

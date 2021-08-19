@@ -146,31 +146,39 @@ const updateAccount = async (req, res) => {
 }
 //取得使用者基本資料
 const get_AccountInfo = async (req, res) => {
-    const { } = req.query;
-    const web3 = await connect_to_web3();
-    const accounts = await web3.eth.getAccounts();
-    const contract = await getContractInstance(web3, CreateManagement.abi, CM_Addr);
-    const useradddr = usrAddr.get(current_user);
-    if (category === "Enterprise") {
-        const Einfo = await contract_call(contract, 'get_Enterprise_account', [useradddr], {
-            from: accounts[0],
-            gas: 6000000,
-        })
-        res.json(Einfo);
-    }
-    else if (category === "Funder") {
-        const Finfo = await contract_call(contract, 'get_Funder_account', [useradddr], {
-            from: accounts[0],
-            gas: 6000000,
-        })
-        res.json(Finfo);
-    }
+    // const { } = req.query;
+    // const web3 = await connect_to_web3();
+    // const accounts = await web3.eth.getAccounts();
+    // const contract = await getContractInstance(web3, CreateManagement.abi, CM_Addr);
+    // const useradddr = usrAddr.get(current_user);
+    // if (category === "Enterprise") {
+    //     const Einfo = await contract_call(contract, 'get_Enterprise_account', [useradddr], {
+    //         from: accounts[0],
+    //         gas: 6000000,
+    //     })
+    //     res.json(Einfo);
+    // }
+    // else if (category === "Funder") {
+    //     const Finfo = await contract_call(contract, 'get_Funder_account', [useradddr], {
+    //         from: accounts[0],
+    //         gas: 6000000,
+    //     })
+    //     res.json(Finfo);
+    // }
+    const userDoc = await Account.findOne({user_id:current_user}).lean().exec();
+	res.json(userDoc);
+	
 
 }
+let eventnumber = 1;
 //輸入企業方投資專案資料
-const set_ProjectData = async (req, res) => {
+const set_ProjectData = async (req, res) => {    
+    const userDoc = await ProjectData.findOne({user_id:current_user}).lean().exec();
+    if(userDoc!=null){
+        eventnumber++;
+    }
     if (category === "Enterprise") {
-        const { eventnumber, project_Name, project_Indtroduce, project_Endday, Target_Amount, interest_Return } = req.query;
+        const { project_Name, project_Indtroduce, project_Endday, Target_Amount, interest_Return } = req.body;
         const web3 = await connect_to_web3();
         const accounts = await web3.eth.getAccounts();
         const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
@@ -190,7 +198,10 @@ const set_ProjectData = async (req, res) => {
             interest_Return: interest_Return,
         }).save();
         console.log('創建成功');
-        console.log(test);
+        console.log(project_Name, project_Indtroduce, project_Endday, Target_Amount, interest_Return );
+        // console.log("號碼"+userDoc.eventnumber)
+        console.log("號碼"+eventnumber)
+        console.log(userDoc);
     }
     else {
         res.json("身分別無效");
@@ -222,13 +233,20 @@ const getAllProjectData = async (req, res) => {
     })
     // let newresult = bytes32_to_string(result["0"][0]);
     // res.json(newresult);
-    res.json(result);
+    const Prodata = await ProjectData.find({}).exec()
+    res.json(Prodata);
+    // res.json(result);
 }
 
+let investment_number=1;
 //輸入投資方投資資料
 const set_FundertData = async (req, res) => {
+    const userDoc = await FunderData.findOne({user_id:current_user}).lean().exec();
+    if(userDoc!=null){
+        investment_number++;
+    }
     if (category === "Funder") {
-        const { investment_number, investment_Duration, investment_Amount, investment_Return } = req.query;
+        const { investment_Duration, investment_Amount, investment_Return } = req.body;
         const web3 = await connect_to_web3();
         const accounts = await web3.eth.getAccounts();
         const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
@@ -265,7 +283,7 @@ const get_UniqueFunderData = async (req, res) => {
         from: accounts[0],
         gas: 6000000,
     })
-    res.json(result);
+    res.json(result);    
 }
 //取的所有投資方資料
 const get_allFunderData = async (req, res) => {
@@ -277,6 +295,7 @@ const get_allFunderData = async (req, res) => {
         from: accounts[0],
         gas: 6000000,
     })
+    // const Prodata = await ProjectData.find({}).exec()
     res.json(result);
 }
 

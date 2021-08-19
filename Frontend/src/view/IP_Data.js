@@ -1,14 +1,14 @@
-import { React, useState } from 'react';
+import { React, useState ,useEffect} from 'react';
 import '../assets/CSS/Main.css';
 import { Grid, makeStyles, TextField, Typography, Button } from '@material-ui/core';
 import Divider from '@material-ui/core/Divider';
 import Sidebar from '../component/Sidebar'
 import Dataphoto from '../assets/image/Data.png'
-
-import { ProjectData_Tbl,InvestData_Tbl} from'../component/MyTables'
+import { ProjectData_Tbl, InvestData_Tbl } from '../component/MyTables'
 import SwipeableViews from 'react-swipeable-views';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import { api_SetFundertData, api_SetProjectData,api_GetAllProjectData } from '../api'
 
 
 const useStyle = makeStyles({
@@ -54,21 +54,45 @@ const useStyle = makeStyles({
 
 const Match = () => {
     const [value, setValue] = useState(0); //控制導覽列
+    const [project_Name, setProName] = useState("");
+    const [project_Indtroduce, setProInto] = useState("");
+    const [project_Endday, setProEndday] = useState("");
+    const [Target_Amount, setTargetAmount] = useState("");
+    const [interest_Return, setProjectReturn] = useState("");
+    const [investment_Duration, setInvestDuration] = useState("");
+    const [investment_Amount, setInvestAmount] = useState("");
+    const [investment_Return, setInvestReturn] = useState("");
+    const [ProData , setProData]= useState()
+    const [FunData , setFunData]= useState("")
+
     const classes = useStyle();
-    const tableHead = [  //資料表頭
-        {
-            Headname: "姓名",
-        },
-        {
-            Headname: "電話",
-        },
-        {
-            Headname: "專案描述",
-        },
-        {
-            Headname: "投資金額",
-        },
-    ];
+
+    // useEffect(() => { //於畫面render後先執行
+    //     ShowProData();
+    // }, []);
+
+    const Psubmit = async (e) => { //企業方資料送出
+        e.preventDefault()
+        if (project_Name && project_Indtroduce && project_Endday && Target_Amount && interest_Return) {
+            const Pdata = await api_SetProjectData({ project_Name, project_Indtroduce, project_Endday, Target_Amount, interest_Return });
+            console.log(Pdata);
+            console.log('-------------------')
+        }
+        else {
+            alert('有空白欄位 ，請在試一次')
+        }
+    }
+    const Fsubmit = async (e) => { //投資方資料送出
+        e.preventDefault()
+        if (investment_Duration && investment_Return && investment_Amount) {
+            const Fdata = await api_SetFundertData({ investment_Duration,investment_Amount ,investment_Return  });
+            console.log(Fdata);
+            console.log('-------------------')
+        }
+        else {
+            alert('有空白欄位 ，請在試一次')
+        }
+    }
     function proData(Name, phone, info, money) {
         return { Name, phone, info, money };
     }
@@ -83,6 +107,15 @@ const Match = () => {
         localStorage.setItem("status_tab", newValue);
         setValue(newValue);
     };
+    // const ShowProData= async()=>{
+    //     const pdt = await api_GetAllProjectData();
+    //     await setProData(pdt["1"]);
+    //     console.log('hello start to print')
+    //     console.log(ProData.config)
+    //     console.log(pdt)
+    //     console.log(typeof(pdt));
+    // }
+
     return (
         <>
             <Sidebar>
@@ -96,10 +129,11 @@ const Match = () => {
                             <Grid item xs={3} sm={6} md={6}>
                                 <div className={classes.DataInfo}>
                                     <Typography variant="h5" align='center' fontWeight='bolder'>專案資料<b /></Typography>
-                                    <form noValidate>
+                                    <form noValidate onSubmit={Psubmit}>
                                         <div style={{ display: 'flex', flexDirection: 'row' }}>
                                             <Typography variant="h6" align='left' style={{ margin: '8px' }}>專案名稱：</Typography>
                                             <TextField
+                                                onChange={(e) => setProName(e.target.value)}
                                                 variant="outlined"
                                                 required
                                                 id="ProName"
@@ -113,6 +147,7 @@ const Match = () => {
 
                                             <Typography variant="h6" align='left' style={{ margin: '8px' }}>專案描述：</Typography>
                                             <TextField
+                                                onChange={(e) => setProInto(e.target.value)}
                                                 variant="outlined"
                                                 required
                                                 id="ProInto"
@@ -126,6 +161,7 @@ const Match = () => {
 
                                             <Typography variant="h6" align='left' style={{ margin: '8px' }}>專案截止日：</Typography>
                                             <TextField
+                                                onChange={(e) => setProEndday(e.target.value)}
                                                 variant="outlined"
                                                 required
                                                 id="ProEndday"
@@ -139,6 +175,7 @@ const Match = () => {
 
                                             <Typography variant="h6" align='left' style={{ margin: '8px' }}>投資總額：</Typography>
                                             <TextField
+                                                onChange={(e) => setTargetAmount(e.target.value)}
                                                 variant="outlined"
                                                 required
                                                 id="TargetAmount"
@@ -152,6 +189,7 @@ const Match = () => {
 
                                             <Typography variant="h6" align='left' style={{ margin: '8px' }}>專案利率：</Typography>
                                             <TextField
+                                                onChange={(e) => setProjectReturn(e.target.value)}
                                                 variant="outlined"
                                                 required
                                                 id="ProjectReturn"
@@ -161,7 +199,7 @@ const Match = () => {
                                                 style={{ marginLeft: '50px' }}
                                             />
                                         </div>
-                                        <Button color='Primary' variant="contained" style={{ marginLeft: '400px', marginTop: '10px' }}> Submit</Button>
+                                        <Button color='Primary' type="submit" variant="contained" style={{ marginLeft: '400px', marginTop: '10px' }}> Submit</Button>
                                     </form>
 
                                 </div>
@@ -169,10 +207,11 @@ const Match = () => {
                             <Grid item xs={3} sm={6} md={6}>
                                 <div className={classes.DataInfo}>
                                     <Typography variant="h5" align='center' fontWeight='bolder'>投資細項<b /></Typography>
-                                    <form noValidate>
+                                    <form noValidate onSubmit={Fsubmit}>
                                         <div style={{ display: 'flex', flexDirection: 'row' }}>
                                             <Typography variant="h6" align='left' style={{ margin: '8px' }}>投資期間：</Typography>
                                             <TextField
+                                                onChange={(e) => setInvestDuration(e.target.value)}
                                                 variant="outlined"
                                                 required
                                                 id="InvestDuration"
@@ -186,6 +225,7 @@ const Match = () => {
 
                                             <Typography variant="h6" align='left' style={{ margin: '8px' }}>投資金額：</Typography>
                                             <TextField
+                                                onChange={(e) => setInvestAmount(e.target.value)}
                                                 variant="outlined"
                                                 required
                                                 id="InvestAmount"
@@ -199,6 +239,7 @@ const Match = () => {
 
                                             <Typography variant="h6" align='left' style={{ margin: '8px' }}>投資利息：</Typography>
                                             <TextField
+                                                onChange={(e) => setInvestReturn(e.target.value)}
                                                 variant="outlined"
                                                 required
                                                 id="InvestReturn"
@@ -209,35 +250,35 @@ const Match = () => {
                                             />
                                         </div>
 
-                                        <Button color='Secondary' variant="contained" style={{ marginLeft: '400px', marginTop: '10px' }}> Submit</Button>
+                                        <Button color='Secondary' type="submit" variant="contained" style={{ marginLeft: '400px', marginTop: '10px' }}> Submit</Button>
                                     </form>
                                 </div>
                             </Grid>
                         </Grid>
                     </div>
                     <Divider style={{ margin: "10px" }} />
-                    
-                        <Typography variant="h5" fontWeight='bolder'>資料總表<b /></Typography>
-                        <Tabs value={value} fullWidth onChange={handleChange} className={classes.Tabs}>
-                            <Tab label="專案資料" style={{ backgroundColor: '#DAF7A6' ,fontWeight:'bolder'}} />
-                            <Tab label="投資者資訊" style={{ backgroundColor: '#5DADE2', fontWeight:'bolder' }} />
-                        </Tabs>
-                        <SwipeableViews index={value} onChangeIndex={handleChange} style={{align:'center',width:'800px',marginBottom:'10px'}}>
-                            <div className={classes.Proslide}>
-                                <ProjectData_Tbl
-                                    tableHead={tableHead}
-                                    tableData={tableData}
-                                />
-                            </div>
-                            <div className={classes.Invslide}>
-                                <InvestData_Tbl
-                                    tableHead={tableHead}
-                                    tableData={tableData}
-                                />
-                            </div>
-                        </SwipeableViews>
-                    
 
+                    <Typography variant="h5" fontWeight='bolder'>資料總表<b /></Typography>
+                    <Tabs value={value} fullWidth onChange={handleChange} className={classes.Tabs}>
+                        <Tab label="專案資料" style={{ backgroundColor: '#DAF7A6', fontWeight: 'bolder' }} />
+                        <Tab label="投資者資訊" style={{ backgroundColor: '#5DADE2', fontWeight: 'bolder' }} />
+                    </Tabs>
+                    <SwipeableViews index={value} onChangeIndex={handleChange} style={{ align: 'center', width: '800px', marginBottom: '10px' }}>
+                        <div className={classes.Proslide}>
+                            <ProjectData_Tbl
+                                
+                                tableData={tableData}
+                            />
+                        </div>
+                        <div className={classes.Invslide}>
+                            <InvestData_Tbl
+                                
+                                tableData={tableData}
+                            />
+                        </div>
+                    </SwipeableViews>
+
+                    <div>資料:{ProData}</div>
                 </div>
             </Sidebar>
         </>

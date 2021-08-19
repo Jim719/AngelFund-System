@@ -51,7 +51,7 @@ const useStyles = makeStyles({
 
 
 
-export const ProjectData_Tbl = ({ tableHead, tableData }) => {
+export const ProjectData_Tbl = ({ tableData }) => {
   const classes = useStyles();
   return (
     <div >
@@ -88,7 +88,7 @@ export const ProjectData_Tbl = ({ tableHead, tableData }) => {
   );
 }
 
-export const InvestData_Tbl = ({ tableHead, tableData }) => {
+export const InvestData_Tbl = ({ tableData }) => {
   const classes = useStyles();
   return (
     <div >

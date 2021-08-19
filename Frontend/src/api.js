@@ -13,10 +13,10 @@ export const api_UpdateAccount = (data) => request.post("/updateAccount",data);/
 export const api_GetAccountInfo = () => request.get("/get_AccountInfo");//個人資料取得
 
 //投資資料
-export const api_SetProjectData = () => request.post("/set_ProjectData");//企業方資料輸入
+export const api_SetProjectData = (data) => request.post("/set_ProjectData",data);//企業方資料輸入
 export const api_GetUniqueProjectData = () => request.get("/get_UniqueProjectData");//取得特定被投資專案資料
 export const api_GetAllProjectData = () => request.get("/getAllProjectData");//取得所有被投資專案資料
-export const api_SetFundertData = () => request.post("/set_FundertData");//輸入投資者欲投資資料
+export const api_SetFundertData = (data) => request.post("/set_FundertData",data);//輸入投資者欲投資資料
 export const api_GetUniqueFunderData = () => request.get("/get_UniqueFunderData");//取得特定投資者欲投資資料
 export const api_GetallFunderData = () => request.get("/get_allFunderData");//取得所有投資者欲投資資料
 
