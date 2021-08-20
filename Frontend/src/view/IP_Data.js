@@ -1,14 +1,14 @@
-import { React, useState ,useEffect} from 'react';
+import { React, useState, useEffect } from 'react';
 import '../assets/CSS/Main.css';
 import { Grid, makeStyles, TextField, Typography, Button } from '@material-ui/core';
 import Divider from '@material-ui/core/Divider';
 import Sidebar from '../component/Sidebar'
 import Dataphoto from '../assets/image/Data.png'
-import { ProjectData_Tbl, InvestData_Tbl } from '../component/MyTables'
+import { Project_Data_Tbl, InvestData_Tbl } from '../component/MyTables'
 import SwipeableViews from 'react-swipeable-views';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import { api_SetFundertData, api_SetProjectData,api_GetAllProjectData } from '../api'
+import { api_SetFundertData, api_SetProjectData, api_GetAllProjectData,api_GetallFunderData } from '../api'
 
 
 const useStyle = makeStyles({
@@ -62,14 +62,52 @@ const Match = () => {
     const [investment_Duration, setInvestDuration] = useState("");
     const [investment_Amount, setInvestAmount] = useState("");
     const [investment_Return, setInvestReturn] = useState("");
-    const [ProData , setProData]= useState()
-    const [FunData , setFunData]= useState("")
+    const [ProData, setProData] = useState([]);
+    const [FunData, setFunData] = useState([]);
 
     const classes = useStyle();
+    useEffect(() => { //於畫面render後執行,反覆抓取企業方資料
+        ShowProData();
+        ShowFunData();
+    }, []);
 
-    // useEffect(() => { //於畫面render後先執行
-    //     ShowProData();
-    // }, []);
+    const ShowProData = async () => {
+        const pdt = await api_GetAllProjectData();
+        const rowData = pdt.data.map((item) => {
+            //取得企業方專案資料 row data            
+            return [
+                item.user_id,
+                item.eventnumber,
+                item.project_Name,
+                item.project_Indtroduce,
+                item.project_Endday,
+                item.Target_Amount,
+                item.interest_Return,
+            ];
+        });
+        setProData(rowData);
+        console.log('hello start to print')
+        console.log(rowData)
+        // console.log(pdt)
+        console.log(typeof (ProData));
+    }
+    const ShowFunData = async () => {
+        const fdt = await api_GetallFunderData();
+        const rowData = fdt.data.map((item) => {
+            //取得投資方投資資料 row data            
+            return [
+                item.user_id,
+                item.investment_number,
+                item.investment_Duration,
+                item.investment_Amount,
+                item.investment_Return,                
+            ];
+        });
+        setFunData(rowData);
+        console.log('hello start to print')
+        console.log(rowData)       
+        console.log(typeof (FunData));
+    }
 
     const Psubmit = async (e) => { //企業方資料送出
         e.preventDefault()
@@ -77,6 +115,7 @@ const Match = () => {
             const Pdata = await api_SetProjectData({ project_Name, project_Indtroduce, project_Endday, Target_Amount, interest_Return });
             console.log(Pdata);
             console.log('-------------------')
+            ShowProData();
         }
         else {
             alert('有空白欄位 ，請在試一次')
@@ -85,36 +124,20 @@ const Match = () => {
     const Fsubmit = async (e) => { //投資方資料送出
         e.preventDefault()
         if (investment_Duration && investment_Return && investment_Amount) {
-            const Fdata = await api_SetFundertData({ investment_Duration,investment_Amount ,investment_Return  });
+            const Fdata = await api_SetFundertData({ investment_Duration, investment_Amount, investment_Return });
             console.log(Fdata);
             console.log('-------------------')
+            ShowFunData();
         }
         else {
             alert('有空白欄位 ，請在試一次')
         }
     }
-    function proData(Name, phone, info, money) {
-        return { Name, phone, info, money };
-    }
-
-    const tableData = [ //專案資料
-        proData('Frozen yoghurt', '擴建廠房增加營收，拓展計劃', "擴建廠房增加營收", "19,283,000"),
-        proData('Ice cream sandwich', 237, "新產品上市增加營收", "723,562,300"),
-        proData('Eclair', 262, "合併公司增加營收", "34,843,500"),
-
-    ];
     const handleChange = (event, newValue) => {
         localStorage.setItem("status_tab", newValue);
         setValue(newValue);
     };
-    // const ShowProData= async()=>{
-    //     const pdt = await api_GetAllProjectData();
-    //     await setProData(pdt["1"]);
-    //     console.log('hello start to print')
-    //     console.log(ProData.config)
-    //     console.log(pdt)
-    //     console.log(typeof(pdt));
-    // }
+
 
     return (
         <>
@@ -265,20 +288,18 @@ const Match = () => {
                     </Tabs>
                     <SwipeableViews index={value} onChangeIndex={handleChange} style={{ align: 'center', width: '800px', marginBottom: '10px' }}>
                         <div className={classes.Proslide}>
-                            <ProjectData_Tbl
-                                
-                                tableData={tableData}
+                            <Project_Data_Tbl
+
+                                tableData={ProData}
                             />
                         </div>
                         <div className={classes.Invslide}>
                             <InvestData_Tbl
-                                
-                                tableData={tableData}
+
+                                tableData={FunData}
                             />
                         </div>
                     </SwipeableViews>
-
-                    <div>資料:{ProData}</div>
                 </div>
             </Sidebar>
         </>

@@ -22361,12 +22361,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xDA70Af0Ea43C6f9bE872581d67605780450E8401",
-      "transactionHash": "0xb549499048a3a7a5429ffb52ffd29d7c5ea8c608cc95236c2aa352f1e2d91b43"
+      "address": "0x641573518A3212847E0094c07760Bf739d17Fe88",
+      "transactionHash": "0x2178cc8b568f2c4a585604fd1b1ce5fb3530609c5ca9425c4f4dff013fdb5954"
     }
   },
   "schemaVersion": "3.3.3",
-  "updatedAt": "2021-08-19T12:40:25.114Z",
+  "updatedAt": "2021-08-20T13:29:25.293Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

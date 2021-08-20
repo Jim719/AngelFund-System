@@ -51,7 +51,7 @@ const useStyles = makeStyles({
 
 
 
-export const ProjectData_Tbl = ({ tableData }) => {
+export const Project_Data_Tbl = ({ tableData }) => {
   const classes = useStyles();
   return (
     <div >
@@ -63,22 +63,19 @@ export const ProjectData_Tbl = ({ tableData }) => {
               <StyledTableCell component="th" scope="row" align="right">專案敘述</StyledTableCell>
               <StyledTableCell component="th" scope="row" align="right">專案截止日</StyledTableCell>
               <StyledTableCell component="th" scope="row" align="right">專案金額</StyledTableCell>
-              <StyledTableCell component="th" scope="row" align="right">專案利率</StyledTableCell>
-              {/* {tableHead.map(item => (
-                <StyledTableCell align="right">
-                  {item.Headname}
-                </StyledTableCell>
-              ))} */}
+              <StyledTableCell component="th" scope="row" align="right">專案利率</StyledTableCell>              
             </TableRow>
           </TableHead>
           <TableBody>
             {tableData.map(Data => (
-              <StyledTableRow key={Data.Name}>
-                <TableCell component="th" scope="row" align="right">{Data.Name}</TableCell>
-                <TableCell align="right">{Data.phone}</TableCell>
-                <TableCell align="right">{Data.info}</TableCell>
-                <TableCell align="right">{Data.money}</TableCell>
-                <TableCell align="right">hello</TableCell>
+              <StyledTableRow key={Data[0]}>
+                {/* <TableCell component="th" scope="row" align="right">{Data.user_id}</TableCell> */}
+                <TableCell align="right">{Data[2]}</TableCell>
+                <TableCell align="right">{Data[3]}</TableCell>
+                <TableCell align="right">{Data[4]}</TableCell>
+                <TableCell align="right">{Data[5]}</TableCell>
+                <TableCell align="right">{Data[6]}</TableCell>
+               
               </StyledTableRow>
             ))}
           </TableBody>
@@ -97,22 +94,15 @@ export const InvestData_Tbl = ({ tableData }) => {
           <TableHead>
             <StyledTableCell component="th" scope="row" align="right">投資期間</StyledTableCell>
             <StyledTableCell component="th" scope="row" align="right">投資金額</StyledTableCell>
-            <StyledTableCell component="th" scope="row" align="right">投資利息</StyledTableCell>
-            {/* <TableRow>
-              {tableHead.map(item => (
-                <StyledTableCell align="right">
-                  {item.Headname}
-                </StyledTableCell>
-              ))}
-            </TableRow> */}
+            <StyledTableCell component="th" scope="row" align="right">投資利息</StyledTableCell>            
           </TableHead>
           <TableBody>
             {tableData.map(Data => (
               <StyledTableRow key={Data.Name}>
-                <TableCell component="th" scope="row" align="right">{Data.Name}</TableCell>
-                <TableCell align="right">{Data.phone}</TableCell>
-                <TableCell align="right">{Data.info}</TableCell>
-                {/* <TableCell align="right">{Data.money}</TableCell> */}
+                {/* <TableCell component="th" scope="row" align="right">{Data.Name}</TableCell> */}
+                <TableCell align="right">{Data[2]}</TableCell>
+                <TableCell align="right">{Data[3]}</TableCell>
+                <TableCell align="right">{Data[4]}</TableCell>
                 
               </StyledTableRow>
             ))}

@@ -201,7 +201,7 @@ const set_ProjectData = async (req, res) => {
         console.log(project_Name, project_Indtroduce, project_Endday, Target_Amount, interest_Return );
         // console.log("號碼"+userDoc.eventnumber)
         console.log("號碼"+eventnumber)
-        console.log(userDoc);
+        // console.log(userDoc);
     }
     else {
         res.json("身分別無效");
@@ -295,8 +295,9 @@ const get_allFunderData = async (req, res) => {
         from: accounts[0],
         gas: 6000000,
     })
-    // const Prodata = await ProjectData.find({}).exec()
-    res.json(result);
+    const Prodata = await FunderData.find({}).exec()
+    res.json(Prodata);
+    // res.json(result);
 }
 
 //進行匹配

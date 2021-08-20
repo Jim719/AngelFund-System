@@ -66,6 +66,7 @@ const Information = () => {
     const ShowUserData=async()=>{
         const userinfo = await api_GetAccountInfo();
         await setUserdata(userinfo.data);
+        console.log(userinfo.data)
     }
 
     const submit = async (e) => {
