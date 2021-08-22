@@ -121,12 +121,12 @@ const updateAccount = async (req, res) => {
     const web3 = await connect_to_web3();
     const accounts = await web3.eth.getAccounts();
     const contract = await getContractInstance(web3, CreateManagement.abi, CM_Addr);
-    const useradddr =await usrAddr.get(current_user);
+    const useradddr = await usrAddr.get(current_user);
     try {
-    const update = await contract_send(contract, 'update_user_account', [useradddr, ID_OR_companyNumber, email, tel, charger], {
-        from: accounts[1],
-        gas: 6000000,
-    })
+        const update = await contract_send(contract, 'update_user_account', [useradddr, ID_OR_companyNumber, email, tel, charger], {
+            from: accounts[1],
+            gas: 6000000,
+        })
         const test = await Account({ //寫入Account資料庫
             user_id: current_user,
             ID_OR_CompanyNunumber: ID_OR_companyNumber,
@@ -134,15 +134,15 @@ const updateAccount = async (req, res) => {
             PhoneNumber: tel,
             Charger: charger,
         }).save();
-            console.log(update);
-            console.log('創建成功');            
+        console.log(update);
+        console.log('創建成功');
         res.json(test);
     }
     catch (e) {
         res.json("創建失敗!");
         console.log(e);
     }
-   
+
 }
 //取得使用者基本資料
 const get_AccountInfo = async (req, res) => {
@@ -165,16 +165,16 @@ const get_AccountInfo = async (req, res) => {
     //     })
     //     res.json(Finfo);
     // }
-    const userDoc = await Account.findOne({user_id:current_user}).lean().exec();
-	res.json(userDoc);
-	
+    const userDoc = await Account.findOne({ user_id: current_user }).lean().exec();
+    res.json(userDoc);
+
 
 }
 let eventnumber = 1;
 //輸入企業方投資專案資料
-const set_ProjectData = async (req, res) => {    
-    const userDoc = await ProjectData.findOne({user_id:current_user}).lean().exec();
-    if(userDoc!=null){
+const set_ProjectData = async (req, res) => {
+    const userDoc = await ProjectData.findOne({ user_id: current_user }).lean().exec();
+    if (userDoc != null) {
         eventnumber++;
     }
     if (category === "Enterprise") {
@@ -198,13 +198,13 @@ const set_ProjectData = async (req, res) => {
             interest_Return: interest_Return,
         }).save();
         console.log('創建成功');
-        console.log(project_Name, project_Indtroduce, project_Endday, Target_Amount, interest_Return );
+        console.log(project_Name, project_Indtroduce, project_Endday, Target_Amount, interest_Return);
         // console.log("號碼"+userDoc.eventnumber)
-        console.log("號碼"+eventnumber)
+        console.log("號碼" + eventnumber)
         // console.log(userDoc);
     }
     else {
-        res.json("身分別無效");
+        res.json("身分別錯誤");
     }
     console.log("身分為: " + category + ',ID是:' + current_user);
 }
@@ -238,11 +238,11 @@ const getAllProjectData = async (req, res) => {
     // res.json(result);
 }
 
-let investment_number=1;
+let investment_number = 1;
 //輸入投資方投資資料
 const set_FundertData = async (req, res) => {
-    const userDoc = await FunderData.findOne({user_id:current_user}).lean().exec();
-    if(userDoc!=null){
+    const userDoc = await FunderData.findOne({ user_id: current_user }).lean().exec();
+    if (userDoc != null) {
         investment_number++;
     }
     if (category === "Funder") {
@@ -283,7 +283,7 @@ const get_UniqueFunderData = async (req, res) => {
         from: accounts[0],
         gas: 6000000,
     })
-    res.json(result);    
+    res.json(result);
 }
 //取的所有投資方資料
 const get_allFunderData = async (req, res) => {
@@ -315,80 +315,89 @@ const matching = async (req, res) => {
 
 //取得匹配資料
 const get_MatchingData = async (req, res) => {
-    const { } = req.query;
-    const web3 = await connect_to_web3();
-    const accounts = await web3.eth.getAccounts();
-    const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
-    const uid = string_to_bytes32(current_user);
-    const result = await contract_call(contract, 'get_MatchingData', [uid], {
-        from: accounts[0],
-        gas: 6000000,
-    })
-    let newresult = bytes32_to_string(result["0"]);
-    // res.json({
-    //     userID: newresult,
-    //     investment_Return: result["1"],
-    //     investment_Amount: result["2"]
+    if (category === "Enterprise") {
+        const { } = req.query;
+        const web3 = await connect_to_web3();
+        const accounts = await web3.eth.getAccounts();
+        const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
+        const uid = string_to_bytes32(current_user);
+        const result = await contract_call(contract, 'get_MatchingData', [uid], {
+            from: accounts[0],
+            gas: 6000000,
+        })
+        let newresult = bytes32_to_string(result["0"]);
+        // res.json({
+        //     userID: newresult,
+        //     investment_Return: result["1"],
+        //     investment_Amount: result["2"]
 
-    // });
+        // });
 
-    const test = await MatchingData_Pro({ //寫入FunderData資料庫
-        user_id: current_user,
-        Funder_ID: newresult,
-        investment_Return: result["1"],
-        investment_Amount: result["2"],
+        const test = await MatchingData_Pro({ //寫入FunderData資料庫
+            user_id: current_user,
+            Funder_ID: newresult,
+            investment_Return: result["1"],
+            investment_Amount: result["2"],
 
-    }).save();
-    console.log('創建成功');
-    console.log(test);
-    let MDP = await MatchingData_Pro.findOne({ user_id: current_user }).exec();
-    res.json({
-        userID: MDP.Funder_ID,
-        investment_Return: MDP.investment_Return,
-        investment_Amount: MDP.investment_Amount
-    })
-    // res.json( MDP.Funder_ID, MDP.investment_Return,MDP.investment_Amount);
+        }).save();
+        console.log('創建成功');
+        console.log(test);
+        let MDP = await MatchingData_Pro.findOne({ user_id: current_user }).exec();
+        res.json({
+            userID: MDP.Funder_ID,
+            investment_Return: MDP.investment_Return,
+            investment_Amount: MDP.investment_Amount
+        })
+        // res.json( MDP.Funder_ID, MDP.investment_Return,MDP.investment_Amount);
+    }
+    else{
+        res.json('不用執行')
+    }
 }
 
 //以投資者角度取得匹配資料
 const get_InvMatchingData = async (req, res) => {
-    const { } = req.query;
-    const web3 = await connect_to_web3();
-    const accounts = await web3.eth.getAccounts();
-    const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
-    const uid = string_to_bytes32(current_user);
-    const result = await contract_call(contract, 'get_InvMatchingData', [uid], {
-        from: accounts[0],
-        gas: 6000000,
-    })
-    let newresult = bytes32_to_string(result["0"]);
-    let names = bytes32_to_string(result["1"]);
-    // res.json({
-    //     userID: newresult,
-    //     // investment_Duration: newdate,
-    //     Name: names,
-    //     Target_Amount: result["2"],
-    //     interest_Return: result["3"]
+    if (category === "Funder") {
+        const { } = req.query;
+        const web3 = await connect_to_web3();
+        const accounts = await web3.eth.getAccounts();
+        const contract = await getContractInstance(web3, DataManagement.abi, DM_Addr);
+        const uid = string_to_bytes32(current_user);
+        const result = await contract_call(contract, 'get_InvMatchingData', [uid], {
+            from: accounts[0],
+            gas: 6000000,
+        })
+        let newresult = bytes32_to_string(result["0"]);
+        let names = bytes32_to_string(result["1"]);
+        // res.json({
+        //     userID: newresult,
+        //     // investment_Duration: newdate,
+        //     Name: names,
+        //     Target_Amount: result["2"],
+        //     interest_Return: result["3"]
 
-    // });
-    const test = await MatchingData_Fun({ //寫入FunderData資料庫
-        user_id: current_user,
-        Enterprise_ID: newresult,
-        Project_Name: names,
-        Target_Amount: result["2"],
-        Interest_Return: result["2"],
-    }).save();
+        // });
+        const test = await MatchingData_Fun({ //寫入FunderData資料庫
+            user_id: current_user,
+            Enterprise_ID: newresult,
+            Project_Name: names,
+            Target_Amount: result["2"],
+            Interest_Return: result["2"],
+        }).save();
 
-    console.log('創建成功');
-    console.log(test);
-    let MDF = await MatchingData_Fun.findOne({ user_id: current_user }).exec();
-    res.json({
-        userID: MDF.Enterprise_ID,
-        Project_Name: MDF.Project_Name,
-        Target_Amount: MDF.Target_Amount,
-        Interest_Return: MDF.Interest_Return
-    })
-
+        console.log('創建成功');
+        console.log(test);
+        let MDF = await MatchingData_Fun.findOne({ user_id: current_user }).exec();
+        res.json({
+            userID: MDF.Enterprise_ID,
+            Project_Name: MDF.Project_Name,
+            Target_Amount: MDF.Target_Amount,
+            Interest_Return: MDF.Interest_Return
+        })
+    }
+    else{
+        res.json('不用執行')
+    }
 }
 
 //計算匹配成功次數
@@ -448,16 +457,24 @@ const get_TXNEnterpriserWallet = async (req, res) => {
             interest_payable: result["5"]
         });
 
-        const test = await ProjectWallet({ //寫入Project Wallet資料庫
-            user_id: current_user,
-            Project_Name: result["1"],
-            Target_Amount: result["2"],
-            Current_Amount: result["4"],
-            Interest_Payable: result["5"],
-        }).save();
+        // const test = await ProjectWallet({ //寫入Project Wallet資料庫
+        //     user_id: current_user,
+        //     Project_Name: result["1"],
+        //     Target_Amount: result["2"],
+        //     Current_Amount: result["4"],
+        //     Interest_Payable: result["5"],
+        // }).save();
 
-        console.log('創建成功');
-        console.log(test);
+        // let TPW = await ProjectWallet.findOne({ user_id: current_user }).exec();
+        // res.json({
+        //     Project_Name: TPW.Project_Name,
+        //     Target_Amount: TPW.Target_Amount,
+        //     Current_Amount: TPW.Current_Amount,
+        //     Interest_Payable: TPW.Interest_Payable,
+        // })
+
+        // console.log('創建成功');
+        // console.log(test);
     }
     else {
         res.json('身分錯誤，請重新確認')
@@ -492,16 +509,23 @@ const get_TXNFunderWallet = async (req, res) => {
             interest_receivable: result["4"],
         });
 
-        const test = await FunderWallet({ //寫入Project Wallet資料庫
-            user_id: current_user,
-            Project_Name: Ent_result["1"],
-            Investment_Amount: result["2"],
-            Current_Amount: result["3"],
-            Interest_Receivable: result["4"],
-        }).save();
+        // const test = await FunderWallet({ //寫入Project Wallet資料庫
+        //     user_id: current_user,
+        //     Project_Name: Ent_result["1"],
+        //     Investment_Amount: result["2"],
+        //     Current_Amount: result["3"],
+        //     Interest_Receivable: result["4"],
+        // }).save();
 
-        console.log('創建成功');
-        console.log(test);
+        // let TFW = await FunderWallet.findOne({ user_id: current_user }).exec();
+        // res.json({
+        //     Project_Name: TFW.Project_Name,
+        //     Investment_Amount: TFW.Investment_Amount,
+        //     Current_Amount: TFW.Current_Amount,
+        //     Interest_Receivable: TFW.Interest_Receivable,
+        // })
+        // console.log('創建成功');
+        // console.log(test);
 
     }
     else {

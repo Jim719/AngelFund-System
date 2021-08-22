@@ -113,6 +113,9 @@ const Match = () => {
         e.preventDefault()
         if (project_Name && project_Indtroduce && project_Endday && Target_Amount && interest_Return) {
             const Pdata = await api_SetProjectData({ project_Name, project_Indtroduce, project_Endday, Target_Amount, interest_Return });
+            if(Pdata.data ==="身分別錯誤"){
+                alert('身分別錯誤')
+            }
             console.log(Pdata);
             console.log('-------------------')
             ShowProData();
@@ -126,6 +129,9 @@ const Match = () => {
         if (investment_Duration && investment_Return && investment_Amount) {
             const Fdata = await api_SetFundertData({ investment_Duration, investment_Amount, investment_Return });
             console.log(Fdata);
+            if(Fdata.data ==="身分別錯誤"){
+                alert('身分別錯誤')
+            }
             console.log('-------------------')
             ShowFunData();
         }
