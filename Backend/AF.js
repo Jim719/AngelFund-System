@@ -170,7 +170,7 @@ const get_AccountInfo = async (req, res) => {
 
 
 }
-let eventnumber = 1;
+var eventnumber = 1;
 //輸入企業方投資專案資料
 const set_ProjectData = async (req, res) => {
     const userDoc = await ProjectData.findOne({ user_id: current_user }).lean().exec();
@@ -447,34 +447,37 @@ const get_TXNEnterpriserWallet = async (req, res) => {
             gas: 6000000,
         })
         let newresult = bytes32_to_string(result["0"]);
+        console.log(result);
+        console.log("專案地址："+txn_addr);
 
-        res.json({
-            userID: newresult,
-            project_name: result["1"],
-            Target_amount: result["2"],
-            interest_rate: result["3"],
-            current_amount: result["4"],
-            interest_payable: result["5"]
-        });
-
-        // const test = await ProjectWallet({ //寫入Project Wallet資料庫
-        //     user_id: current_user,
-        //     Project_Name: result["1"],
-        //     Target_Amount: result["2"],
-        //     Current_Amount: result["4"],
-        //     Interest_Payable: result["5"],
-        // }).save();
-
-        // let TPW = await ProjectWallet.findOne({ user_id: current_user }).exec();
         // res.json({
-        //     Project_Name: TPW.Project_Name,
-        //     Target_Amount: TPW.Target_Amount,
-        //     Current_Amount: TPW.Current_Amount,
-        //     Interest_Payable: TPW.Interest_Payable,
-        // })
+        //     userID: newresult,
+        //     project_name: result["1"],
+        //     Target_amount: result["2"],
+        //     interest_rate: result["3"],
+        //     current_amount: result["4"],
+        //     interest_payable: result["5"]
+        // });
 
-        // console.log('創建成功');
-        // console.log(test);
+        const test = await ProjectWallet({ //寫入Project Wallet資料庫
+            user_id: current_user,
+            Project_Name: result["1"],
+            Target_Amount: result["2"],
+            Current_Amount: result["4"],
+            Interest_Payable: result["5"],
+        }).save();
+        
+        console.log('創建成功');
+        console.log(test);
+
+        let TPW = await ProjectWallet.findOne({ user_id: current_user }).exec();
+        res.json({
+            Project_Name: TPW.Project_Name,
+            Target_Amount: TPW.Target_Amount,
+            Current_Amount: TPW.Current_Amount,
+            Interest_Payable: TPW.Interest_Payable,
+        })
+
     }
     else {
         res.json('身分錯誤，請重新確認')
@@ -501,31 +504,33 @@ const get_TXNFunderWallet = async (req, res) => {
             gas: 6000000,
         })
         let newresult = bytes32_to_string(result["0"]);
-        res.json({
-            userID: newresult,
-            investment_Return: result["1"],
-            investment_amount: result["2"],
-            current_money: result["3"],
-            interest_receivable: result["4"],
-        });
-
-        // const test = await FunderWallet({ //寫入Project Wallet資料庫
-        //     user_id: current_user,
-        //     Project_Name: Ent_result["1"],
-        //     Investment_Amount: result["2"],
-        //     Current_Amount: result["3"],
-        //     Interest_Receivable: result["4"],
-        // }).save();
-
-        // let TFW = await FunderWallet.findOne({ user_id: current_user }).exec();
+        console.log(result);
+        console.log("專案地址："+txn_addr);
         // res.json({
-        //     Project_Name: TFW.Project_Name,
-        //     Investment_Amount: TFW.Investment_Amount,
-        //     Current_Amount: TFW.Current_Amount,
-        //     Interest_Receivable: TFW.Interest_Receivable,
-        // })
-        // console.log('創建成功');
-        // console.log(test);
+        //     userID: newresult,
+        //     investment_Return: result["1"],
+        //     investment_amount: result["2"],
+        //     current_money: result["3"],
+        //     interest_receivable: result["4"],
+        // });
+
+        const test = await FunderWallet({ //寫入Project Wallet資料庫
+            user_id: current_user,
+            Project_Name: Ent_result["1"],
+            Investment_Amount: result["2"],
+            Current_Amount: result["3"],
+            Interest_Receivable: result["4"],
+        }).save();
+
+        let TFW = await FunderWallet.findOne({ user_id: current_user }).exec();
+        res.json({
+            Project_Name: TFW.Project_Name,
+            Investment_Amount: TFW.Investment_Amount,
+            Current_Amount: TFW.Current_Amount,
+            Interest_Receivable: TFW.Interest_Receivable,
+        })
+        console.log('創建成功');
+        console.log(test);
 
     }
     else {

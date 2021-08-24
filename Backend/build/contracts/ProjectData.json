@@ -258,7 +258,7 @@
         "id": 1746,
         "nodeType": "ImportDirective",
         "scope": 2055,
-        "sourceUnit": 2627,
+        "sourceUnit": 2626,
         "src": "67:20:7",
         "symbolAliases": [],
         "unitAlias": ""
@@ -4442,7 +4442,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 2627,
+          "SourceUnit": 2626,
           "absolutePath": "/C/Users/Jim/AngelFund-System/Backend/contracts/user.sol",
           "file": "./user.sol",
           "scope": 2055,
@@ -8672,7 +8672,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.3",
-  "updatedAt": "2021-08-22T14:07:15.200Z",
+  "updatedAt": "2021-08-24T13:28:17.276Z",
   "devdoc": {
     "methods": {}
   },

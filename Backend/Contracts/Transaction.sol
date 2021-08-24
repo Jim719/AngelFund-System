@@ -41,22 +41,24 @@ contract Transaction{
         uint256 investment_amount;
         (funderuserID,investment_return,investment_amount) = DM.get_MatchingData(Enter_id);
         fw = Funder_wallet(funderuserID,investment_return,investment_amount,0,0);
+       
         
-        string memory convertuserID;
+        string memory project_name;
+        bytes32 pname;
+        uint256 Target_amount;
+        uint256 interest_return;
+        (,pname,Target_amount,interest_return) = DM.get_InvMatchingData(Funder_id);
+        
         uint8 i = 0;
-        while(i < 32 && Enter_id[i] != 0) {
+        while(i < 32 && pname[i] != 0) {
             i++;
         }
         bytes memory bytesArray = new bytes(i);
-        for (i = 0; i < 32 && Enter_id[i] != 0; i++) {
-            bytesArray[i] = Enter_id[i];
+        for (i = 0; i < 32 && pname[i] != 0; i++) {
+            bytesArray[i] = pname[i];
         }
-        convertuserID = string(bytesArray);
+        project_name = string(bytesArray);
         
-        string memory project_name;
-        uint256 Target_amount;
-        uint256 interest_return;
-        (project_name,,,Target_amount,interest_return) = DM.get_UniqueProjectData(convertuserID,"1");
         ew = Enterprise_wallet(Enter_id,project_name,Target_amount,interest_return,0,0);
         
         fw.current_money = fw.investment_amount - ew.Target_amount;
