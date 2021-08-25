@@ -30,3 +30,5 @@ export const api_GetCounted = () => request.get("/get_counted");//取得匹配�
 export const api_Settxn= () => request.post("/set_txn");//交易開始
 export const api_GetTXNEnterpriserWallet = () => request.get("/get_TXNEnterpriserWallet");//取得交易完成後企業方金額帳目
 export const api_GetTXNFunderWallet = () => request.get("/get_TXNFunderWallet");//取得交易完成後投資方金額帳目
+export const api_GetFunTxndata = () => request.get("/GetFunTxndata");//取得交易完成後投資方資料庫金額帳目
+export const api_GetProTxndata = () => request.get("/GetProTxndata");//取得交易完成後企業方資料庫金額帳目

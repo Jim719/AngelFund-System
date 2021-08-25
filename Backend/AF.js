@@ -350,7 +350,7 @@ const get_MatchingData = async (req, res) => {
         })
         // res.json( MDP.Funder_ID, MDP.investment_Return,MDP.investment_Amount);
     }
-    else{
+    else {
         res.json('不用執行')
     }
 }
@@ -395,7 +395,7 @@ const get_InvMatchingData = async (req, res) => {
             Interest_Return: MDF.Interest_Return
         })
     }
-    else{
+    else {
         res.json('不用執行')
     }
 }
@@ -431,7 +431,7 @@ const set_txn = async (req, res) => {
     res.json(result);
 }
 
-const get_TXNEnterpriserWallet = async (req, res) => {
+const get_TXNEnterpriserWallet = async (req, res) => { //從區塊鏈上得到錢包金額 並寫置資料庫中
     if (category === "Enterprise") {
         const { } = req.query;
         const web3 = await connect_to_web3();
@@ -448,7 +448,7 @@ const get_TXNEnterpriserWallet = async (req, res) => {
         })
         let newresult = bytes32_to_string(result["0"]);
         console.log(result);
-        console.log("專案地址："+txn_addr);
+        console.log("專案地址：" + txn_addr);
 
         // res.json({
         //     userID: newresult,
@@ -466,7 +466,7 @@ const get_TXNEnterpriserWallet = async (req, res) => {
             Current_Amount: result["4"],
             Interest_Payable: result["5"],
         }).save();
-        
+
         console.log('創建成功');
         console.log(test);
 
@@ -477,7 +477,7 @@ const get_TXNEnterpriserWallet = async (req, res) => {
             Current_Amount: TPW.Current_Amount,
             Interest_Payable: TPW.Interest_Payable,
         })
-
+        
     }
     else {
         res.json('身分錯誤，請重新確認')
@@ -505,7 +505,7 @@ const get_TXNFunderWallet = async (req, res) => {
         })
         let newresult = bytes32_to_string(result["0"]);
         console.log(result);
-        console.log("專案地址："+txn_addr);
+        console.log("專案地址：" + txn_addr);
         // res.json({
         //     userID: newresult,
         //     investment_Return: result["1"],
@@ -522,6 +522,44 @@ const get_TXNFunderWallet = async (req, res) => {
             Interest_Receivable: result["4"],
         }).save();
 
+        res.json({ test });
+        // let TFW = await FunderWallet.findOne({ user_id: current_user }).exec();
+        // res.json({
+        //     Project_Name: TFW.Project_Name,
+        //     Investment_Amount: TFW.Investment_Amount,
+        //     Current_Amount: TFW.Current_Amount,
+        //     Interest_Receivable: TFW.Interest_Receivable,
+        // })
+        console.log('創建成功');
+        console.log(test);
+
+    }
+    else {
+        res.json('身分錯誤，請重新確認')
+    }
+}
+
+const GetProTxndata = async (req, res) => {  //從資料庫取出 企業方錢包金額
+    if (category === "Enterprise") {
+
+        const { } = req.query;
+        let TPW = await ProjectWallet.findOne({ user_id: current_user }).exec();
+        res.json({
+            Project_Name: TPW.Project_Name,
+            Target_Amount: TPW.Target_Amount,
+            Current_Amount: TPW.Current_Amount,
+            Interest_Payable: TPW.Interest_Payable,
+        })
+    }
+    else {
+        res.json('身分錯誤，請重新確認')
+    }
+}
+
+const GetFunTxndata = async (req, res) => {  //從資料庫取出 投資者錢包金額
+    if (category === "Funder") {
+
+        const { } = req.query;
         let TFW = await FunderWallet.findOne({ user_id: current_user }).exec();
         res.json({
             Project_Name: TFW.Project_Name,
@@ -529,9 +567,6 @@ const get_TXNFunderWallet = async (req, res) => {
             Current_Amount: TFW.Current_Amount,
             Interest_Receivable: TFW.Interest_Receivable,
         })
-        console.log('創建成功');
-        console.log(test);
-
     }
     else {
         res.json('身分錯誤，請重新確認')
@@ -555,8 +590,8 @@ AF.get('/get_counted', get_counted);    //計算匹配次數
 AF.post('/set_txn', set_txn);           //交易開始
 AF.get('/get_TXNEnterpriserWallet', get_TXNEnterpriserWallet);  //取得交易完成後企業方金額帳目
 AF.get('/get_TXNFunderWallet', get_TXNFunderWallet);            //取得交易完成後投資方金額帳目
-
-
+AF.get('/GetFunTxndata', GetFunTxndata); //從資料庫取得投資者錢包
+AF.get('/GetProTxndata', GetProTxndata); //從資料庫取得企業方錢包
 
 AF.listen(process.env.LISTENING_PORT, () => {
     console.log(`AF listening at http://localhost:${process.env.LISTENING_PORT}`);

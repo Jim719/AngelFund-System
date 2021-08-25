@@ -14,7 +14,7 @@ import PhoneInTalkIcon from '@material-ui/icons/PhoneInTalk';
 import ListItemText from '@material-ui/core/ListItemText';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import txn from '../assets/image/transaction.jpg'
-import { api_Matching, api_GetMatchingData, api_GetInvMatchingData ,api_Settxn,api_GetTXNEnterpriserWallet,api_GetTXNFunderWallet} from '../api'
+import { api_Matching, api_GetMatchingData, api_GetInvMatchingData ,api_Settxn,api_GetTXNEnterpriserWallet,api_GetTXNFunderWallet,api_GetFunTxndata,api_GetProTxndata} from '../api'
 
 
 const useStyle = makeStyles({
@@ -83,10 +83,10 @@ const Txn = () => {
         setFundata(Match_Fundata.data);
     }
     const ShowTxnData= async()=>{ //交易資料顯示於畫面
-        const Match_Prodata = await api_GetMatchingData();
-        const Match_Fundata = await api_GetInvMatchingData();
-        setProdata(Match_Prodata.data);
-        setFundata(Match_Fundata.data);
+        const txn_Prodata = await api_GetProTxndata();
+        const txn_Fundata = await api_GetFunTxndata();
+        setTxnProdata(txn_Prodata.data);
+        setTxnFundata(txn_Fundata.data);
     }
     const SubmmitMatch= async()=>{ //呼叫匹配過程，並將結果呼叫出來
         const match = await api_Matching();
@@ -101,8 +101,10 @@ const Txn = () => {
     }
     const SubmmitTxn= async()=>{ //呼叫交易過程，並將結果呼叫出來
         const Txn = await api_Settxn();
-        const Txn_Prodata = await api_GetTXNEnterpriserWallet();
-        const Txn_Fundata = await api_GetTXNFunderWallet();
+        const txnpro = await api_GetTXNEnterpriserWallet(); 
+        const txnfun = await api_GetTXNFunderWallet();
+        const Txn_Prodata = await api_GetProTxndata(); 
+        const Txn_Fundata = await api_GetFunTxndata();
         setTxnProdata(Txn_Prodata.data);
         setTxnFundata(Txn_Fundata.data);
         console.log('交易資料'+Txn);
