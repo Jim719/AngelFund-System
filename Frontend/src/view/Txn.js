@@ -14,7 +14,8 @@ import PhoneInTalkIcon from '@material-ui/icons/PhoneInTalk';
 import ListItemText from '@material-ui/core/ListItemText';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import txn from '../assets/image/transaction.jpg'
-import { api_Matching, api_GetMatchingData, api_GetInvMatchingData ,api_Settxn,api_GetTXNEnterpriserWallet,api_GetTXNFunderWallet,api_GetFunTxndata,api_GetProTxndata} from '../api'
+import { api_Matching, api_GetMatchingData, api_GetInvMatchingData ,api_Settxn,api_GetTXNEnterpriserWallet,
+    api_GetTXNFunderWallet,api_GetFunTxndata,api_GetProTxndata,api_GetDBMatchingData,api_GetDBInvMatchingData} from '../api'
 
 
 const useStyle = makeStyles({
@@ -77,8 +78,8 @@ const Txn = () => {
     }, []);
 
     const ShowData= async()=>{ //匹配資料顯示於畫面
-        const Match_Prodata = await api_GetMatchingData();
-        const Match_Fundata = await api_GetInvMatchingData();
+        const Match_Prodata = await api_GetDBMatchingData();
+        const Match_Fundata = await api_GetDBInvMatchingData();
         setProdata(Match_Prodata.data);
         setFundata(Match_Fundata.data);
     }
@@ -90,8 +91,10 @@ const Txn = () => {
     }
     const SubmmitMatch= async()=>{ //呼叫匹配過程，並將結果呼叫出來
         const match = await api_Matching();
-        const Match_Prodata = await api_GetMatchingData();
-        const Match_Fundata = await api_GetInvMatchingData();
+        await api_GetMatchingData();
+        await api_GetInvMatchingData();
+        const Match_Prodata = await api_GetDBMatchingData();
+        const Match_Fundata = await api_GetDBInvMatchingData();
         setProdata(Match_Prodata.data);
         setFundata(Match_Fundata.data);
         console.log('匹配資料'+match);
@@ -101,8 +104,8 @@ const Txn = () => {
     }
     const SubmmitTxn= async()=>{ //呼叫交易過程，並將結果呼叫出來
         const Txn = await api_Settxn();
-        const txnpro = await api_GetTXNEnterpriserWallet(); 
-        const txnfun = await api_GetTXNFunderWallet();
+        await api_GetTXNEnterpriserWallet(); 
+        await api_GetTXNFunderWallet();
         const Txn_Prodata = await api_GetProTxndata(); 
         const Txn_Fundata = await api_GetFunTxndata();
         setTxnProdata(Txn_Prodata.data);

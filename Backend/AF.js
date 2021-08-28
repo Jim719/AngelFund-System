@@ -313,7 +313,7 @@ const matching = async (req, res) => {
     res.json(result);
 }
 
-//取得匹配資料
+//取得匹配資料寫入資料庫
 const get_MatchingData = async (req, res) => {
     if (category === "Enterprise") {
         const { } = req.query;
@@ -342,12 +342,7 @@ const get_MatchingData = async (req, res) => {
         }).save();
         console.log('創建成功');
         console.log(test);
-        let MDP = await MatchingData_Pro.findOne({ user_id: current_user }).exec();
-        res.json({
-            userID: MDP.Funder_ID,
-            investment_Return: MDP.investment_Return,
-            investment_Amount: MDP.investment_Amount
-        })
+        res.json(test);
         // res.json( MDP.Funder_ID, MDP.investment_Return,MDP.investment_Amount);
     }
     else {
@@ -355,7 +350,22 @@ const get_MatchingData = async (req, res) => {
     }
 }
 
-//以投資者角度取得匹配資料
+const Get_DBMatchingData =async (req,res) => {
+    if (category === "Enterprise") {
+        const { } = req.query;
+        let MDP = await MatchingData_Pro.findOne({ user_id: current_user }).exec();
+        res.json({
+            userID: MDP.Funder_ID,
+            investment_Return: MDP.investment_Return,
+            investment_Amount: MDP.investment_Amount
+        })
+    }
+    else {
+        res.json('不用執行')
+    }
+}
+
+//以投資者角度取得匹配資料寫入資料庫
 const get_InvMatchingData = async (req, res) => {
     if (category === "Funder") {
         const { } = req.query;
@@ -387,6 +397,18 @@ const get_InvMatchingData = async (req, res) => {
 
         console.log('創建成功');
         console.log(test);
+        res.json(test);
+    }
+    else {
+        res.json('不用執行')
+    }
+}
+
+
+const Get_DBInvMatchingData = async (req, res) => {
+    if (category === "Funder") {
+
+        const { } = req.query;
         let MDF = await MatchingData_Fun.findOne({ user_id: current_user }).exec();
         res.json({
             userID: MDF.Enterprise_ID,
@@ -477,7 +499,7 @@ const get_TXNEnterpriserWallet = async (req, res) => { //從區塊鏈上得到�
             Current_Amount: TPW.Current_Amount,
             Interest_Payable: TPW.Interest_Payable,
         })
-        
+
     }
     else {
         res.json('身分錯誤，請重新確認')
@@ -573,20 +595,30 @@ const GetFunTxndata = async (req, res) => {  //從資料庫取出 投資者錢�
     }
 }
 
+//資料創建
 AF.post('/create', create); //創建帳號
 AF.post('/login', login);    //登入
+
+//個人資料輸入
 AF.post('/updateAccount', updateAccount);       //輸入個人資料
 AF.get('/get_AccountInfo', get_AccountInfo);    //取得個人資料
+
+//投資專案條件
 AF.post('/set_ProjectData', set_ProjectData);   //輸入被投資專案資料
 AF.get('/get_UniqueProjectData', get_UniqueProjectData);    //取得特定被投資專案資料
 AF.get('/getAllProjectData', getAllProjectData);    //取得所有被投資專案資料
 AF.post('/set_FundertData', set_FundertData);       //輸入投資者欲投資資料
 AF.get('/get_UniqueFunderData', get_UniqueFunderData);      //取得特定投資者欲投資資料
 AF.get('/get_allFunderData', get_allFunderData);            //取得所有投資者欲投資資料
+
+//匹配
 AF.post('/matching', matching);         //進行匹配
 AF.get('/get_MatchingData', get_MatchingData);      //取得匹配成功資料
 AF.get('/get_InvMatchingData', get_InvMatchingData);      //取得匹配成功資料
 AF.get('/get_counted', get_counted);    //計算匹配次數
+AF.get('/Get_DBMatchingData', Get_DBMatchingData);      //從資料庫中取得匹配成功資料
+AF.get('/Get_DBInvMatchingData', Get_DBInvMatchingData);      //從資料庫中取得匹配成功資料
+//交易
 AF.post('/set_txn', set_txn);           //交易開始
 AF.get('/get_TXNEnterpriserWallet', get_TXNEnterpriserWallet);  //取得交易完成後企業方金額帳目
 AF.get('/get_TXNFunderWallet', get_TXNFunderWallet);            //取得交易完成後投資方金額帳目

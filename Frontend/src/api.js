@@ -25,6 +25,8 @@ export const api_Matching = () => request.post("/matching");//進行匹配
 export const api_GetMatchingData = () => request.get("/get_MatchingData");//取得匹配成功資料
 export const api_GetInvMatchingData = () => request.get("/get_InvMatchingData");//取得匹配成功資料
 export const api_GetCounted = () => request.get("/get_counted");//取得匹配成功資料
+export const api_GetDBMatchingData = () => request.get("/Get_DBMatchingData");//取得匹配成功資料
+export const api_GetDBInvMatchingData = () => request.get("/Get_DBInvMatchingData");//取得匹配成功資料
 
 //交易
 export const api_Settxn= () => request.post("/set_txn");//交易開始
