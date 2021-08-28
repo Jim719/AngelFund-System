@@ -1,4 +1,4 @@
-import React from 'react';
+import { React, useState, useEffect } from 'react';
 import List from '@material-ui/core/List';
 import { Button, Drawer, makeStyles, Typography } from '@material-ui/core';
 import Divider from '@material-ui/core/Divider';
@@ -8,7 +8,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { AddCircleOutlined, FormatBold } from '@material-ui/icons';
 import AcUnitIcon from '@material-ui/icons/AcUnit';
 import { useHistory, useLocation } from 'react-router-dom';
-
+import { api_GetUserName} from '../api'
 const drawerWidth = 250;
 const useStyles = makeStyles({
     drawer: {
@@ -39,6 +39,7 @@ const Sidebar = ({ children }) => {
     const classes = useStyles()
     const history = useHistory()
     const location = useLocation()
+    const [Name, setName] = useState("");
     const menuItems = [
         {
             text: "平台主頁",
@@ -61,6 +62,17 @@ const Sidebar = ({ children }) => {
             path: '/Txn'
         },
     ]
+    useEffect(() => {
+        Read_UserName();
+        
+    }, []);
+    const Read_UserName= async()=>{
+        const userdoc = await api_GetUserName();
+        const userinfo = userdoc.data        
+        setName(userinfo.user_Name);
+        
+
+    }
     return (
         <div className={classes.background}>
             <div className={classes.root}>
@@ -75,7 +87,7 @@ const Sidebar = ({ children }) => {
                             AngelFunds Platform
                         </Typography>
                         <Typography variant="h6" className={classes.title}>
-                            hello Jim
+                            Hello ! {Name}
                         </Typography>
                         <Divider />
 

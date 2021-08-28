@@ -33,7 +33,7 @@ const useStyle = makeStyles({
         justifyContent: 'center',
     },
     DataInfo: {
-        width: '500px',
+        width: '490px',
         height: '400px',
         border: '2px solid'
     },

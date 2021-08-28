@@ -43,7 +43,7 @@ var category;
 
 //創建使用者
 const create = async (req, res) => {
-    const { id, password, kind } = req.body
+    const { id, password, kind,FamilyName,Name } = req.body
     const web3 = await connect_to_web3();
     const accounts = await web3.eth.getAccounts();
     const contract = await getContractInstance(web3, CreateManagement.abi, CM_Addr);
@@ -64,6 +64,8 @@ const create = async (req, res) => {
             user_id: id,
             user_password: password,
             user_kind: kind,
+            user_FamilyName:FamilyName,
+            user_Name:Name,
         }).save();
 
         res.json(txn_data)
@@ -76,6 +78,15 @@ const create = async (req, res) => {
         res.json("創建失敗");
     }
 
+}
+
+const UserName=async (req, res) =>{
+    const { } = req.body;
+    const userDoc = await User.findOne({ user_id: current_user }).lean().exec();
+    res.json({
+        user_FamilyName: userDoc.user_FamilyName,
+        user_Name: userDoc.user_Name,
+    })
 }
 
 //使用者登入
@@ -597,6 +608,7 @@ const GetFunTxndata = async (req, res) => {  //從資料庫取出 投資者錢�
 
 //資料創建
 AF.post('/create', create); //創建帳號
+AF.get('/UserName', UserName); //創建帳號
 AF.post('/login', login);    //登入
 
 //個人資料輸入

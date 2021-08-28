@@ -7,6 +7,7 @@ const request = axios.create({ baseURL: `${baseURL}`, withCredentials: true });
 //帳號
 export const apiCreate = (data) => request.post("/create",data);//創建帳號
 export const apiLogin = (data) => request.post("/login",data);//登入帳號
+export const api_GetUserName = () => request.get("/UserName");//登入帳號
 
 //個人資料
 export const api_UpdateAccount = (data) => request.post("/updateAccount",data);//個人資料輸入

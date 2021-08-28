@@ -1,4 +1,4 @@
-import  React, {useState } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -15,7 +15,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import ArrowRightOutlinedIcon from '@material-ui/icons/ArrowRightOutlined';
-import {apiCreate} from '../api'
+import { apiCreate } from '../api'
 
 function Copyright() {
   return (
@@ -56,24 +56,26 @@ export default function SignUp() {
   const [id, setId] = useState("");
   const [password, setPwd] = useState("");
   const [kind, setKind] = useState("");
-  
+  const [FamilyName, setFamilyName] = useState("");
+  const [Name, setName] = useState("");
+
 
   const submit = async (e) => {
     e.preventDefault()
-    if (id && password &&kind) {
-    const create = await apiCreate({id,password,kind});
-      console.log(id,password,kind);
+    if (id && password && kind && FamilyName && Name) {
+      const create = await apiCreate({ id, password, kind ,FamilyName,Name});
+      console.log(id, password, kind,FamilyName,Name);
       console.log('-------------------')
       console.log(create);
-      history.push("/HomePage");  
+      history.push("/HomePage");
     }
-    else{
+    else {
       alert('有空白欄位 ，請在試一次');
     }
-    
+
   }
 
-  
+
 
   return (
     <Container component="main" maxWidth="xs">
@@ -89,6 +91,7 @@ export default function SignUp() {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
+                onChange={(e) => setFamilyName(e.target.value)}
                 autoComplete="lname"
                 variant="outlined"
                 required
@@ -101,6 +104,7 @@ export default function SignUp() {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
+                onChange={(e) => setName(e.target.value)}
                 variant="outlined"
                 required
                 fullWidth
@@ -140,7 +144,7 @@ export default function SignUp() {
             <Grid item xs={12}>
               <FormLabel style={{ fontsize: 20 }}> 角色種類： </FormLabel>
               <RadioGroup aria-label="CATEGORY " name="Category" row>
-                <FormControlLabel value="Funder" label="投資者" control={<Radio color="primary" />}  defaultValue={kind} onChange={(e) => setKind(e.target.value)}/>
+                <FormControlLabel value="Funder" label="投資者" control={<Radio color="primary" />} defaultValue={kind} onChange={(e) => setKind(e.target.value)} />
                 <FormControlLabel value="Enterprise" label="企業方" control={<Radio color="primary" />} defaultValue={kind} onChange={(e) => setKind(e.target.value)} />
               </RadioGroup>
 

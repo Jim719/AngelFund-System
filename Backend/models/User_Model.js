@@ -19,6 +19,14 @@ const UserSchema = new Schema(
 			required: true,
 			trim: true,
 		},
+		user_FamilyName: {
+			type: String,			
+			trim: true,
+		},
+		user_Name: {
+			type: String,			
+			trim: true,
+		},
 	},
 
 );
